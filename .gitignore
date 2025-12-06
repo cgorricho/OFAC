@@ -1,0 +1,331 @@
+# OFAC Sanctions Screening Tools - Git Ignore File
+
+# ============================================================================
+# OFAC Data Cache (Downloaded sanctions lists - too large for git)
+# ============================================================================
+data/
+data/**/*.CSV
+data/**/*.csv
+data/**/*.xml
+data/**/*.XML
+data/**/*.zip
+data/**/*.ZIP
+data/**/version.json
+
+# Keep directory structure but ignore content
+!data/.gitkeep
+!data/sdn/.gitkeep
+!data/cons/.gitkeep
+
+# ============================================================================
+# Python
+# ============================================================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# pdm
+.pdm.toml
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# ============================================================================
+# Excel / Office
+# ============================================================================
+# Excel temporary files
+~$*.xls*
+~$*.xlsx
+~$*.xlsm
+*.tmp
+
+# Excel backup files
+*.xlk
+
+# PowerPoint temporary
+~$*.ppt*
+
+# Word temporary
+~$*.doc*
+
+# Publisher temporary
+~$*.pub
+
+# ============================================================================
+# Streamlit
+# ============================================================================
+.streamlit/secrets.toml
+
+# ============================================================================
+# xlwings
+# ============================================================================
+# xlwings cache
+xlwings.log
+
+# ============================================================================
+# IDE / Editor
+# ============================================================================
+# VSCode
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+
+# ============================================================================
+# Operating System
+# ============================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.directory
+.Trash-*
+.nfs*
+
+# Windows Zone Identifier (from downloads)
+*:Zone.Identifier
+
+# ============================================================================
+# Project Specific
+# ============================================================================
+# Temporary download directory
+temp/
+tmp/
+*.tmp
+
+# Backup files
+*.bak
+*.backup
+*_backup
+*.old
+
+# Log files
+*.log
+logs/
+
+# Test output
+test-results/
+test-output/
+
+# Local configuration (if any secrets)
+local_config.py
+local_settings.py
+secrets.py
+
+# User-specific files
+user_data/
+my_*.csv
+my_*.xlsx
+
+# BMAD working files (keep tracked bmad-master docs)
+.bmad/
+.cursor/rules/bmad/
+
+# ============================================================================
+# Documentation that should be ignored
+# ============================================================================
+# API documentation (Word file - keep original, it's checked in)
+# But ignore any converted versions
+docs/**/*.pdf
+docs/**/*.html
+
+# ============================================================================
+# Keep these files
+# ============================================================================
+# Force include important config files
+!.gitignore
+!README.md
+!CLAUDE.md
+!requirements.txt
+!pytest.ini
+!.flake8
+!pyproject.toml
+
+# Keep documentation
+!docs/**/*.md
+!docs/**/*.txt
+!docs/**/*.xsd
+
+# Keep sample data (it's small and needed for testing)
+!sample-data/*.csv
+!sample-data/*.xlsx
