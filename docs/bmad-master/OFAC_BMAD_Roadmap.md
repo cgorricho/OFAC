@@ -13,14 +13,15 @@
 1. [Executive Summary](#executive-summary)
 2. [Project Classification](#project-classification)
 3. [Complete Roadmap Overview](#complete-roadmap-overview)
-4. [Phase 0: Pre-Implementation](#phase-0-pre-implementation)
-5. [Phase 1: Planning (Track 2: BMad Method)](#phase-1-planning-track-2-bmad-method)
-6. [Phase 2: Architecture (Level 3)](#phase-2-architecture-level-3)
-7. [Phase 3: Story Preparation](#phase-3-story-preparation)
-8. [Phase 4: Implementation Loop](#phase-4-implementation-loop)
-9. [Phase 5: Testing & Quality](#phase-5-testing--quality)
-10. [Checkpoints & Learning Moments](#checkpoints--learning-moments)
-11. [Alternative Paths & Deviations](#alternative-paths--deviations)
+4. [Session Management Strategy](#session-management-strategy)
+5. [Phase 0: Pre-Implementation](#phase-0-pre-implementation)
+6. [Phase 1: Planning (Track 2: BMad Method)](#phase-1-planning-track-2-bmad-method)
+7. [Phase 2: Architecture (Level 3)](#phase-2-architecture-level-3)
+8. [Phase 3: Story Preparation](#phase-3-story-preparation)
+9. [Phase 4: Implementation Loop](#phase-4-implementation-loop)
+10. [Phase 5: Testing & Quality](#phase-5-testing--quality)
+11. [Checkpoints & Learning Moments](#checkpoints--learning-moments)
+12. [Alternative Paths & Deviations](#alternative-paths--deviations)
 
 ---
 
