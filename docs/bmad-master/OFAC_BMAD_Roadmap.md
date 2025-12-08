@@ -207,6 +207,197 @@ SM: epic-retrospective
 
 ---
 
+## Session Management Strategy
+
+### Understanding Claude Sessions
+
+**What is a Session?**
+- A single continuous conversation with Claude Code in your IDE
+- Has persistent context (conversation history, files read, decisions made)
+- Can run for hours or days if needed
+- Maintains knowledge of previous work
+
+**Why Session Management Matters**:
+- Long sessions = large context → slower responses, higher costs
+- Strategic restarts = fresh context → faster performance, clearer thinking
+- Session boundaries = natural checkpoints → better documentation, cleaner transitions
+
+### When to Restart Claude Sessions
+
+**✅ RESTART at these points**:
+
+1. **Phase Transitions** (Major Milestones)
+   - After completing PRD → Before Architecture
+   - After Architecture + Epics → Before Implementation
+   - After Implementation → Before Testing/Retrospective
+   - **Why**: Different expertise needed, fresh perspective, context reset
+
+2. **Epic Boundaries** (During Implementation)
+   - After completing Epic 1 → Before starting Epic 2
+   - **Why**: Prevents context pollution, each epic gets clean slate
+
+3. **Daily Boundaries** (Multi-Day Work)
+   - End of work day → Next morning fresh start
+   - **Why**: Natural break, review previous work with fresh eyes
+
+4. **After Running Install/Build**
+   - After `npx bmad-method@alpha install` (DuckTales activation)
+   - After major dependency changes
+   - **Why**: Ensures agents see updated configurations
+
+5. **When Context Feels "Heavy"**
+   - Responses getting slower
+   - Answers less focused
+   - Too much history to track
+   - **Why**: Context overload = degraded performance
+
+**❌ DO NOT RESTART during**:
+
+1. **Mid-Workflow Execution**
+   - Don't interrupt `*workflow-init`, `*create-prd`, `*create-architecture`
+   - **Why**: Breaks workflow continuity, loses intermediate state
+
+2. **Mid-Story Development**
+   - Don't restart while implementing a story
+   - **Why**: Loses detailed context of acceptance criteria, test cases
+
+3. **Party Mode (Swarms)**
+   - Let multiple agents complete their parallel work
+   - **Why**: Coordination across agents, shared context needed
+
+4. **Active Debugging**
+   - Stay in same session while fixing a specific bug
+   - **Why**: Stack traces, error context, debugging state preserved
+
+### Recommended Restart Points for OFAC
+
+**R1: After Project Assessment** ✅ DONE
+- You: Read all docs, created assessment, created learning journey
+- Next session: Scrooge McDuck creates PRD
+
+**R2: After PRD Creation**
+- PM (Scrooge) completes PRD.md
+- Git commit: "feat(planning): complete PRD with Scrooge McDuck"
+- Next session: Gyro Gearloose creates Architecture
+
+**R3: After Architecture + Epics**
+- Architect (Gyro) completes Architecture.md
+- Analyst (Webby) or Architect creates all epics
+- Git commit: "feat(planning): complete Architecture and Epics"
+- Next session: Launchpad McQuack plans sprint
+
+**R4: After Implementation Readiness Check**
+- SM (Launchpad) runs `*implementation-readiness`
+- All validation passed
+- Git commit: "chore: validate implementation readiness"
+- Next session: Begin Epic 1 with Fenton (DEV)
+
+**R5: Between Epics** (2-3 times during implementation)
+- After completing Epic 1 → Before Epic 2
+- After completing Epic 2 → Before Epic 3
+- Git commits for each epic completion
+- Next session: Fresh start for next epic
+
+**R6: After All Implementation**
+- All stories completed, tests passing
+- Git commit: "feat: complete all implementation"
+- Next session: Ludwig Von Drake runs testing, retrospective
+
+**Total Expected Sessions for OFAC**: 5-7 sessions
+
+### Session Continuity Strategies
+
+**How to Resume After Restart**:
+
+1. **Git Commits as Checkpoints**
+   - Commit work at session end
+   - New session: `git log` shows what was completed
+   - Commit messages = session summary
+
+2. **Explicit Context Handoff**
+   - At session end: "We completed PRD. Next: Architecture with Gyro."
+   - New session start: "Resume from PRD completion. Start Architecture."
+
+3. **Document References**
+   - Point to completed artifacts: "PRD is in .bmad/bmm/planning/prd.md"
+   - New session can read and continue
+
+4. **Learning Journal Updates**
+   - Update BMAD_Learning_Journal.md at session end
+   - Captures observations, decisions, patterns
+   - New session reference for context
+
+5. **Session Summary in Chat**
+   - Ask: "Summarize what we accomplished this session"
+   - Copy summary to notes
+   - Paste at start of next session if needed
+
+**Best Practice**:
+- End each session with: Git commit + Learning journal entry + Explicit next step
+- Start each session with: Check git log + Read last artifact + State next goal
+
+### Session Documentation Protocol
+
+**At End of Each Session**:
+
+```bash
+# 1. Commit your work
+git add .
+git commit -m "session: completed [PHASE/EPIC] with [AGENT]"
+
+# 2. Check status
+git log -1  # See what was done
+git status  # See what's uncommitted
+```
+
+**At Start of Next Session**:
+
+```bash
+# 1. Review previous work
+git log -3  # Last 3 commits
+cat .bmad/bmm/planning/prd.md  # Or whatever artifact was created
+
+# 2. State your goal clearly to Claude
+# Example: "Resume OFAC project. PRD completed by Scrooge.
+#           Now invoke Gyro Gearloose for Architecture."
+```
+
+### Expected Session Count by Phase
+
+**Phase 1 (Planning)**: 1-2 sessions
+- Session 1: PRD with Scrooge McDuck
+- Session 2 (optional if complex): PRD refinement
+
+**Phase 2 (Architecture + Epics)**: 1-2 sessions
+- Session 1: Architecture with Gyro Gearloose
+- Session 2: Epic creation with Webby or Gyro
+
+**Phase 3 (Prep)**: Same session as Phase 2 end
+- No restart needed for `*implementation-readiness`
+
+**Phase 4 (Implementation)**: 2-4 sessions
+- Session per epic or per 2-3 stories
+- Restart between epics for clean context
+
+**Phase 5 (Testing)**: 1 session
+- Ludwig Von Drake testing workflow
+
+**Phase 6 (Retrospective)**: 1 session
+- Final retrospective and documentation
+
+**Total**: 5-9 sessions for full OFAC project
+
+### Key Insight: Sessions are Tools, Not Barriers
+
+- **Don't fear restarts**: They improve performance
+- **Use git as memory**: Commits preserve state
+- **Documents as continuity**: Artifacts carry context forward
+- **Be explicit**: Tell new session exactly where to resume
+
+**Mrs. Beakley Recommends**: Treat session restarts like tactical regrouping. Brief the new session like briefing a new agent - state the mission, reference the intel (docs/commits), execute the next objective. Military precision ensures smooth transitions.
+
+---
+
 ## Phase 0: Pre-Implementation
 
 ### Current State Analysis

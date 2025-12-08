@@ -3,7 +3,12 @@
     "allow": [
       "Bash(.claude/hooks/play-tts.sh:*)",
       "Bash(find:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(cat:*)",
+      "Bash(npx bmad-method@alpha install:*)",
+      "Bash([ -d /home/cgorricho/apps/OFAC/.git ])",
+      "WebSearch",
+      "WebFetch(domain:ofac.treasury.gov)"
     ]
   },
   "enableAllProjectMcpServers": true,

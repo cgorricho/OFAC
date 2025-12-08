@@ -32,26 +32,26 @@
 
 ### Checkpoint #1: Track Classification
 
-**Date**: ___________
+**Date**: 20251205
 **Workflow**: `*workflow-init`
 **Agent**: PM (John)
 
 **Observations**:
 - How did PM analyze complexity keywords?
-  - [Your notes]
+  - It reviewed the project documents I had generated. 
 - What questions helped distinguish Track 1 vs Track 2?
-  - [Your notes]
+  - Compliance, to suggest Enterprise and simplicity to suggest Quick track. In the end it selected Track two and justified the selection
 - Why did PM recommend Track 2 for OFAC?
-  - [Your notes]
+  - Good balance between complexity and simplicity
 
 **Insights**:
 - Key insight about track selection:
-  - [Your insight]
+  - Simple, straight forward approach
 - Pattern I can apply to future projects:
-  - [Your pattern]
+  - Answer questions briefly or selecting the options suggested
 
 **Questions**:
-- [Any uncertainties or follow-up questions]
+- I noticed I did not take them into consideration to create the workflow, up until I highlited them. Then it trested the docs as must reference constraints fo the other agents. All was recorded in the apps/OFAC/docs/bmm-workflow-status.yaml
 
 ---
 
