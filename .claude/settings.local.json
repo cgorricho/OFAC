@@ -8,7 +8,13 @@
       "Bash(npx bmad-method@alpha install:*)",
       "Bash([ -d /home/cgorricho/apps/OFAC/.git ])",
       "WebSearch",
-      "WebFetch(domain:ofac.treasury.gov)"
+      "WebFetch(domain:ofac.treasury.gov)",
+      "mcp__agentvibes__text_to_speech",
+      "Bash(tree:*)",
+      "Bash(wc:*)",
+      "Bash(git -C /home/cgorricho/apps/OFAC log --oneline -20)",
+      "Bash(git -C /home/cgorricho/apps/OFAC log:*)",
+      "Bash(file:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

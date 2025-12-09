@@ -73,10 +73,11 @@ workflow_status:
     name: "Planning"
     workflows:
       - id: "prd"
-        status: "required"
+        status: "docs/prd.md"
         agent: "pm"
         command: "/bmad:bmm:workflows:prd"
         output: "Product Requirements Document"
+        completed: "2025-12-08"
 
       - id: "validate-prd"
         status: "optional"
@@ -85,10 +86,12 @@ workflow_status:
         output: "PRD quality validation"
 
       - id: "create-ux-design"
-        status: "required"
+        status: "docs/ux-design-specification.md"
         agent: "ux-designer"
         command: "/bmad:bmm:workflows:create-ux-design"
-        note: "Required for UI - both Streamlit webapp and Excel add-in interfaces"
+        output: "UX Design Specification"
+        completed: "2025-12-09"
+        note: "Comprehensive UX spec for Streamlit webapp (Phase 1)"
 
   # Phase 2: Solutioning
   - phase: 2

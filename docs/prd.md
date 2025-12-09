@@ -1,12 +1,14 @@
 ---
-stepsCompleted: [1, 2, 3, 4]
+stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 inputDocuments:
   - '/home/cgorricho/apps/OFAC/docs/analysis/product-brief-OFAC-20251206.md'
   - '/home/cgorricho/apps/OFAC/docs/conceptual-design/20251205_OFAC_Sanctions_Screening_Tools_Plan.md'
   - '/home/cgorricho/apps/OFAC/docs/conceptual-design/20251206_OFAC_Data_Schemas_Analysis_and_Recommendations.md'
   - '/home/cgorricho/apps/OFAC/docs/conceptual-design/20251206_OFAC_List_Update_Policies_and_Strategy.md'
 workflowType: 'prd'
-lastStep: 4
+lastStep: 11
+completed: true
+completionDate: '2025-12-08'
 project_name: 'OFAC'
 user_name: 'Carlos'
 date: '2025-12-07'
@@ -608,3 +610,1432 @@ He takes 30 seconds to add a note to the compliance file: *"Re-screened 2025-01-
 - Explainable flagging logic
 - Manual verification support (spot-checks against OFAC.gov)
 - Professional formatting comparable to commercial tools
+
+## Domain-Specific Requirements
+
+### GovTech Compliance & Regulatory Overview
+
+The OFAC Sanctions Screening Tool operates in the **Government/Regulatory Compliance (GovTech)** domain, serving humanitarian NGOs that must comply with U.S. Treasury OFAC regulations. While the tool itself is internal to ACN-USA (Aid to the Church in Need - U.S. office), it processes screening data for projects that flow through an international organizational structure with 22 national offices worldwide, coordinated by the parent organization in Germany.
+
+**Domain Complexity Factors:**
+
+1. **U.S. Federal Regulatory Compliance:** OFAC sanctions screening is mandatory for U.S.-based organizations making international grants
+2. **International Data Handling:** Screening data relates to projects from global partners flowing through German headquarters
+3. **Audit & Transparency Requirements:** 10-year documentation retention, external auditor review, board oversight
+4. **Potential EU Privacy Considerations:** Parent organization based in Germany may trigger GDPR considerations for shared data
+5. **Commercial Expansion Implications:** Phase 2 commercialization introduces procurement, accessibility, and multi-jurisdictional compliance
+
+### Key Domain Concerns
+
+**1. Procurement Compliance (Phase 2 Concern)**
+
+**Current Status:** Not applicable for Phase 1 internal use.
+
+**Phase 2 Consideration:** If commercializing to NGOs with federal funding, customers may need to comply with federal procurement rules when purchasing software/services. This is a research concern for Month 12 commercial decision gate.
+
+**Action:** Defer until commercial viability validated. Research federal procurement requirements (FAR/DFAR basics, GSA Schedule considerations) only if 2+ peer NGOs express purchase interest.
+
+**2. Security & Data Handling**
+
+**Data Classification:**
+
+The tool processes two data categories:
+
+1. **Public Data (No Security Concerns):**
+   - OFAC SDN and Consolidated Lists (public domain from OFAC.gov)
+   - OFAC entity details, addresses, aliases, programs
+
+2. **Sensitive Organizational Data (Confidentiality Required):**
+   - Project applicant organization names and locations
+   - Project descriptions and purposes (humanitarian aid context)
+   - Grant allocation decisions (which organizations cleared/flagged/blocked)
+   - Internal compliance notes and legal review correspondence
+   - Information flows through ACN International (Germany) to 22 national offices
+
+**Privacy Considerations:**
+
+- **U.S. Requirements:** No PII of individuals; organizational data only. Standard confidentiality practices sufficient.
+- **EU Privacy (GDPR) - Potential Concern:** Parent organization in Germany processes project data that U.S. office screens. While ACN-USA and ACN International are separate legal entities, shared project pipeline data may have GDPR implications.
+
+**Phase 1 Mitigation (Local Deployment):**
+- Data never leaves local machine (localhost deployment)
+- No cloud storage, no data transmission
+- No external database, no backups to external servers
+- Screening reports saved to local/network drives only
+- **GDPR Impact: Minimized** - local processing, no cross-border data transfer, data minimization principle satisfied
+
+**Phase 2 Cloud Deployment (If Commercializing):**
+- Cloud hosting = potential GDPR applicability if European NGOs use the tool
+- Multi-tenant architecture requires strong data isolation
+- Cross-border data transfers (U.S. cloud hosting EU customers) = GDPR considerations
+- **Action Required:** Legal review of GDPR applicability, potential Privacy Shield/Standard Contractual Clauses
+
+**Data Retention Policy:**
+
+- **Audit Requirement:** 10-year retention for compliance documentation
+- **Retention Scope:** Screening reports with full audit trail (dates, versions, match scores, analyst notes)
+- **Storage Location (Phase 1):** Local compliance shared drive (organization's existing retention infrastructure)
+- **Storage Location (Phase 2):** Cloud storage with appropriate retention policies and legal holds
+
+**Security Measures (Phase 1):**
+
+- Local deployment = physical security of user's machine
+- No authentication required (single-user localhost)
+- OFAC data integrity: atomic download/swap prevents corruption
+- No network exposure (localhost only, not accessible remotely)
+
+**Security Measures (Phase 2 - If Commercializing):**
+
+- Authentication and authorization (API keys, user accounts)
+- Multi-tenant data isolation (each NGO's data separate)
+- Encryption in transit (HTTPS) and at rest
+- Audit logging of all screening activities
+- Backup and disaster recovery
+- Security incident response procedures
+
+**3. Accessibility Standards (Section 508)**
+
+**Phase 1 Decision:** Keep It Simple (KIS).
+
+**Current Status:** No accessibility requirements identified for internal MVP.
+
+**Phase 2 Consideration:** If commercializing to NGOs with federal funding, customers may require Section 508 compliance (WCAG 2.1 AA standard).
+
+**Action:**
+- Phase 1: Defer accessibility enhancements
+- Streamlit default accessibility is basic but functional
+- Phase 2 React rebuild: Design for WCAG 2.1 AA compliance from the start if commercial validation succeeds
+
+**4. Transparency & Audit Requirements**
+
+**Status:** ✅ Core product differentiator - already extensively addressed.
+
+**Requirements Satisfied:**
+
+- **Match Score Transparency:** Every result shows percentage match, match type, country alignment
+- **OFAC Version Tracking:** Every report timestamps which OFAC data version used
+- **Explainable Decisions:** Clear logic for OK/REVIEW/NOK classifications
+- **Audit Trail Completeness:** Screening ID, timestamp, match details, analyst notes, 10-year retention format
+- **Traceability:** Every decision backed by evidence and reproducible
+- **Board/Auditor Ready:** Professional format, no modification needed for presentation
+
+**No additional requirements needed beyond what's documented in Success Criteria and User Journeys.**
+
+**5. Privacy & Confidential Data Handling**
+
+**Sensitivity Context:**
+
+Screening reports contain confidential information:
+- **Pre-Award Confidentiality:** Which organizations are under consideration for grants (not public until awarded)
+- **Rejection Reasoning:** Why organizations were flagged or blocked (sensitive, potentially reputational)
+- **Internal Deliberations:** Legal review notes, compliance officer annotations, board discussions
+
+**Access Control:**
+
+**Phase 1 (Internal Use):**
+- **Primary Access:** Carlos (Compliance Officer / Fractional CFO)
+- **Shared With:**
+  - Jennifer Williams (Executive Director) - summary and exception cases
+  - Robert Thompson (Legal Counsel) - REVIEW and NOK cases requiring interpretation
+  - Board of Directors - summary statistics and compliance reports
+  - External Auditors - annual review of screening documentation
+
+**Phase 1 Access Management:**
+- No technical access controls in tool (localhost, single-user)
+- Access managed through organizational file sharing permissions (compliance shared drive)
+- Standard organizational confidentiality policies apply
+
+**Phase 2 (If Commercializing):**
+- Role-based access control (RBAC): Compliance Officer, Executive, Auditor roles
+- Multi-tenant data isolation: Each NGO sees only their screening data
+- Audit logging: Track who accessed what screening reports and when
+- Data portability: Customers can export their screening history if they leave service
+
+**Privacy Risk Assessment:**
+
+**Phase 1 Risk Level: LOW**
+- Local deployment, no network exposure
+- Organizational data (not individual PII)
+- Standard organizational confidentiality practices sufficient
+- Existing file-sharing security infrastructure used
+
+**Phase 2 Risk Level: MEDIUM**
+- Cloud hosting introduces data breach risk
+- Multi-tenant architecture requires technical isolation controls
+- GDPR applicability if European NGOs use service
+- Compliance with U.S. privacy expectations (confidentiality, breach notification)
+
+**Mitigation Strategy:**
+
+**Phase 1:**
+- Document confidentiality expectations in user training
+- Leverage existing organizational data handling policies
+- No additional technical controls needed
+
+**Phase 2 (If Commercializing):**
+- Legal review of privacy obligations (U.S. + potential GDPR)
+- Implement encryption, access controls, audit logging
+- Privacy policy and terms of service
+- Data processing agreements for European customers (if applicable)
+- Breach notification procedures
+
+### Industry Standards & Best Practices
+
+**OFAC Compliance Industry Standards:**
+
+1. **FFIEC BSA/AML Examination Manual:**
+   - Financial institution guidance on OFAC compliance programs
+   - While ACN-USA is not a financial institution, manual provides best practices for screening frequency, documentation, and audit trails
+   - **Application:** 10-year retention, screening all transactions, maintaining current OFAC data
+
+2. **OFAC Best Practices for Sanctions Compliance:**
+   - Official guidance from U.S. Treasury
+   - Recommends risk-based approach, regular list updates, comprehensive audit trails
+   - **Application:** Daily data freshness checks, fuzzy matching for name variations, escalation procedures for matches
+
+3. **NGO Sector Compliance Norms:**
+   - Pre-award screening of all grant recipients
+   - Documentation of due diligence for board and auditors
+   - Legal review of ambiguous cases
+   - **Application:** Systematic screening workflow, exception management, legal escalation
+
+**Audit & Compliance Documentation Standards:**
+
+1. **External Audit Requirements:**
+   - CPA firms conducting annual audits expect systematic compliance processes
+   - Documentation must be complete, contemporaneous, and defensible
+   - **Application:** Timestamped reports, version tracking, analyst notes, legal correspondence
+
+2. **Board Oversight Standards:**
+   - Nonprofit boards require evidence of risk management and compliance
+   - Reports must be understandable to non-technical board members
+   - **Application:** Summary statistics, professional formatting, clear explanations
+
+### Required Expertise & Validation
+
+**Domain Expertise Needed:**
+
+1. **OFAC Regulatory Knowledge:**
+   - Understanding of SDN vs. Consolidated Lists
+   - General License framework and applicability
+   - Sanctions program structures and jurisdictional scope
+   - **Source:** U.S. Treasury OFAC website, compliance training, legal counsel consultation
+
+2. **Humanitarian Aid Context:**
+   - General License 21 (Syria humanitarian aid)
+   - General License D-1 (Iran humanitarian aid)
+   - General License 41 (Venezuela humanitarian aid)
+   - Evolving regulatory landscape for NGO operations in sanctioned countries
+   - **Source:** ACN International legal team, sector peer networks, OFAC guidance updates
+
+3. **NGO Compliance Practices:**
+   - Grant-making due diligence workflows
+   - Audit trail requirements for nonprofit accountability
+   - Board reporting expectations
+   - **Source:** Carlos's direct experience, external auditor feedback, peer NGO practices
+
+4. **Fuzzy Matching & Data Science (Technical):**
+   - String similarity algorithms (rapidfuzz, token_sort_ratio)
+   - Threshold calibration for false positive/negative balance
+   - Country-aware scoring and entity resolution
+   - **Source:** Technical research, testing with real grant data, iterative refinement
+
+**Validation Requirements:**
+
+**Phase 1 (Months 1-6):**
+
+1. **Functional Validation:**
+   - Test fuzzy matching with real organization names from past grant rounds
+   - Validate classification logic against known OFAC matches
+   - Spot-check tool results against manual OFAC.gov searches
+   - **Success Criteria:** Zero false negatives, 10-30% acceptable false positive rate
+
+2. **Accuracy Validation:**
+   - Quarterly spot-checks: Manually verify sample of screenings
+   - Compare tool classifications against legal counsel interpretations
+   - Track false positive rate and adjust threshold if >50%
+   - **Success Criteria:** 100% alignment with legal counsel on NOK cases
+
+3. **Audit Validation:**
+   - External auditor review of screening documentation (Month 6+)
+   - Verify reports meet 10-year retention standards
+   - Confirm audit trail completeness and traceability
+   - **Success Criteria:** Zero audit findings, unconditional approval
+
+4. **User Validation:**
+   - Carlos completes 3 real grant rounds using tool
+   - Board accepts reports without modification
+   - Time savings validated (≥70% reduction)
+   - **Success Criteria:** Internal user confidently recommends to peers
+
+**Phase 2 (If Commercializing):**
+
+1. **Peer Validation:**
+   - Demo to 2-3 peer compliance officers at other NGOs
+   - Solicit feedback on trustworthiness and professionalism
+   - Validate willingness to pay $200-500/year
+   - **Success Criteria:** At least 1 peer NGO commits to pilot
+
+2. **Legal/Privacy Validation:**
+   - Legal review of GDPR applicability for European customers
+   - Privacy policy and terms of service review
+   - Procurement compliance research (if federal-funded customers)
+   - **Success Criteria:** Legal clearance for commercial launch
+
+### Implementation Considerations
+
+**Domain-Driven Design Implications:**
+
+**1. Data Versioning is Non-Negotiable:**
+
+Every screening must be traceable to specific OFAC data version used. This is not a "nice to have" - it's **mandatory for defensibility**.
+
+**Implementation:**
+- `version.json` tracks OFAC list update timestamps
+- Every screening report embeds OFAC data version
+- Atomic download/swap prevents corrupted data states
+- Version history retained for 10+ years
+
+**2. Conservative Matching Threshold (Better Safe Than Sorry):**
+
+False negatives are career-ending for compliance officers. False positives are manageable (manual review).
+
+**Implementation:**
+- Default 80% similarity threshold (conservative)
+- Adjustable if false positive rate >50% after Phase 1 learning
+- Country-aware scoring reduces false positives while maintaining safety
+- Human-in-the-loop for all REVIEW cases
+
+**3. Explainability Over Black-Box Algorithms:**
+
+Trust comes from transparency, not proprietary "magic."
+
+**Implementation:**
+- Match scores visible (percentage)
+- Match type documented (Exact/Fuzzy/Alias)
+- Country alignment shown (Match/Mismatch)
+- Classification logic explainable to board and auditors
+- No ML "black boxes" in Phase 1 (keep it simple and defensible)
+
+**4. Humanitarian Context Detection is Domain-Specific:**
+
+Generic compliance tools don't understand that **humanitarian NGOs legitimately operate in sanctioned countries under General Licenses**.
+
+**Implementation:**
+- Universal sanctioned country registry (not just Syria)
+- Humanitarian keyword detection (not just project titles)
+- General License mapping (dynamic, not hardcoded)
+- **Differentiator:** This is what makes it "built by practitioners for practitioners"
+
+**5. Privacy by Design (Phase 1: Local, Phase 2: Cloud):**
+
+**Phase 1:**
+- Local deployment = minimal privacy risk
+- No technical controls needed beyond organizational policies
+- Standard confidentiality practices sufficient
+
+**Phase 2:**
+- Privacy must be architected from the start (not bolted on later)
+- Multi-tenant data isolation
+- Encryption, access controls, audit logging
+- Legal review before launch (GDPR, procurement, accessibility)
+
+**6. Compliance Drives Release Sequencing:**
+
+**MVP Non-Negotiables (Must work perfectly for Phase 1):**
+- OFAC data version tracking
+- Fuzzy matching with conservative threshold
+- Universal humanitarian context detection
+- Audit trail completeness
+- Excel report generation
+
+**Can Wait for Phase 2:**
+- Advanced UI/UX polish (Streamlit is "good enough")
+- Authentication/authorization (single-user Phase 1)
+- Automated update scheduling (manual updates acceptable)
+- PDF reports (Excel meets requirements)
+- Accessibility enhancements (no users requiring it in Phase 1)
+
+**Must Research Before Phase 2:**
+- GDPR applicability for European NGO customers
+- Federal procurement compliance (if selling to federally-funded NGOs)
+- Section 508 accessibility (if target market includes federal grantees)
+
+## API Backend Specific Requirements
+
+### Project-Type Overview
+
+The OFAC Sanctions Screening Tool is fundamentally an **API-first architecture** with a web frontend (Streamlit for Phase 1, potentially React for Phase 2). The core value lives in the API service - the screening engine, fuzzy matching algorithm, OFAC data management, and classification logic. This design enables multiple client applications (Streamlit web app, future Excel UDF, potential commercial integrations) to share a single, consistent backend.
+
+**Architectural Philosophy:**
+
+- **Backend remains stable while frontend evolves** - Can swap Streamlit for React without touching API
+- **Single source of truth** - All clients use same matching engine, same OFAC data cache, same version tracking
+- **Multiple client support** - Streamlit (primary), Excel UDF (Phase 1.5), commercial dashboard (Phase 2), mobile/CLI (future)
+- **Local-first design** - Phase 1 runs entirely on localhost (no cloud dependencies, maximum privacy)
+- **Cloud-ready architecture** - API structure prepared for Phase 2 cloud deployment without major refactoring
+
+### Technical Architecture Considerations
+
+**Phase 1: Localhost Deployment**
+
+- **API Service:** FastAPI framework running on `localhost:8000`
+- **Web Frontend:** Streamlit application on `localhost:8501`
+- **Data Storage:** Local file system (`data/` directory for OFAC lists, `version.json` for tracking)
+- **Communication:** HTTP between Streamlit and API (both localhost, no network exposure)
+- **Security Model:** Physical machine security only (no auth required for single-user local deployment)
+
+**Phase 2: Cloud Deployment (If Commercializing)**
+
+- **API Service:** Hosted FastAPI on cloud platform (AWS/Railway/Heroku)
+- **Frontend:** React rebuild or Streamlit cloud deployment
+- **Data Storage:** Cloud database (PostgreSQL/MongoDB) for screening history, S3 for OFAC cache
+- **Communication:** HTTPS with authentication (API keys)
+- **Security Model:** Multi-tenant data isolation, encryption at rest and in transit, role-based access control
+
+### API Endpoint Specification
+
+**Phase 1 MVP Endpoints:**
+
+**1. Batch Screening Endpoint**
+```
+POST /api/v1/screen/batch
+```
+
+**Purpose:** Screen multiple organizations in a single request (primary workflow)
+
+**Request:**
+- **Content-Type:** `multipart/form-data`
+- **Body:** File upload (Excel `.xlsx` or CSV `.csv`)
+- **Required fields in file:**
+  - Organization name (column: "Institution", "Organization", or similar)
+  - Country (optional, column: "Country" or similar)
+  - Project description (optional, column: "Project Description", "Purpose", or similar)
+
+**Response:**
+- **Content-Type:** `application/json`
+- **Status codes:**
+  - `200 OK` - Screening completed successfully
+  - `400 Bad Request` - Invalid file format or missing required columns
+  - `500 Internal Server Error` - OFAC data unavailable or processing error
+- **Body structure:**
+```json
+{
+  "screening_id": "uuid",
+  "screening_date": "2025-01-07T10:30:00Z",
+  "ofac_version": "2025-01-03",
+  "data_age_days": 4,
+  "total_screened": 87,
+  "summary": {
+    "ok": 84,
+    "review": 2,
+    "nok": 1
+  },
+  "results": [
+    {
+      "row_number": 1,
+      "organization": "Example Org",
+      "country": "Syria",
+      "purpose": "Humanitarian medical supplies",
+      "status": "REVIEW",
+      "match_found": true,
+      "confidence_score": 83,
+      "match_type": "Fuzzy",
+      "matched_entity": "Example Agency",
+      "ofac_list": "Consolidated",
+      "country_alignment": "Match",
+      "general_license": "GL-21",
+      "risk_level": "Medium",
+      "ofac_entity_id": "CONS-8742",
+      "program": "Syria Sanctions"
+    }
+  ]
+}
+```
+
+**Processing:**
+- Auto-detect column names ("Institution", "Country", etc.)
+- Screen each organization against SDN + Consolidated lists
+- Apply fuzzy matching (80% threshold), country-aware scoring, humanitarian context detection
+- Return complete results with audit trail fields
+
+---
+
+**2. Single Organization Screening Endpoint**
+```
+POST /api/v1/screen/single
+```
+
+**Purpose:** Screen one organization (for ad-hoc checks, Excel UDF, spot-checking)
+
+**Request:**
+- **Content-Type:** `application/json`
+- **Body:**
+```json
+{
+  "organization": "Syrian Development Foundation",
+  "country": "Syria",
+  "purpose": "Humanitarian medical supplies"
+}
+```
+
+**Response:**
+- **Content-Type:** `application/json`
+- **Status codes:**
+  - `200 OK` - Screening completed
+  - `400 Bad Request` - Missing organization name
+  - `500 Internal Server Error` - OFAC data unavailable
+- **Body structure:** Single result object (same structure as batch results array)
+
+**Processing:**
+- Same matching logic as batch endpoint
+- Returns immediately (<2 seconds)
+- Used by Excel UDF, quick spot-checks, re-screening
+
+---
+
+**3. OFAC Data Version Endpoint**
+```
+GET /api/v1/data/version
+```
+
+**Purpose:** Check OFAC data freshness and version information
+
+**Request:**
+- No body required
+
+**Response:**
+- **Content-Type:** `application/json`
+- **Status codes:**
+  - `200 OK` - Version info retrieved
+  - `500 Internal Server Error` - Version file corrupted or missing
+- **Body structure:**
+```json
+{
+  "sdn_version": "2025-01-03T14:22:00Z",
+  "consolidated_version": "2025-01-03T14:22:00Z",
+  "age_days": 4,
+  "freshness_status": "current",
+  "warning_threshold_days": 7,
+  "last_check": "2025-01-07T08:00:00Z"
+}
+```
+
+**Freshness Status:**
+- `current`: ≤7 days old (green)
+- `warning`: 8-14 days old (yellow)
+- `stale`: 15-29 days old (orange)
+- `critical`: ≥30 days old (red/block screenings)
+
+---
+
+**4. OFAC Data Update Endpoint**
+```
+POST /api/v1/data/update
+```
+
+**Purpose:** Trigger download and update of OFAC lists
+
+**Request:**
+- No body required (or optional `{"force": true}` to bypass freshness check)
+
+**Response:**
+- **Content-Type:** `application/json`
+- **Status codes:**
+  - `200 OK` - Update completed successfully
+  - `304 Not Modified` - Data already current, no update needed
+  - `500 Internal Server Error` - Download failed, data corrupted
+- **Body structure:**
+```json
+{
+  "status": "updated",
+  "previous_version": "2024-12-30T10:15:00Z",
+  "new_version": "2025-01-03T14:22:00Z",
+  "files_updated": ["SDN.CSV", "ALT.CSV", "ADD.CSV", "CONS_PRIM.CSV", "CONS_ALT.CSV", "CONS_ADD.CSV"],
+  "download_time_seconds": 12.4
+}
+```
+
+**Processing:**
+- Check HTTP Last-Modified headers from OFAC.gov
+- Download all 6 CSV files if new version available
+- Atomic swap (download to temp, validate, swap, delete old)
+- Update version.json with new timestamps
+- Rollback if any file fails validation
+
+---
+
+**Future Endpoints (Deferred to Phase 2 or Phase 3):**
+
+- `GET /api/v1/health` - Health check for monitoring
+- `GET /api/v1/screen/history` - Retrieve past screening results (requires database)
+- `GET /api/v1/config` - Get API configuration and capabilities
+- `POST /api/v1/screen/batch/async` - Asynchronous batch processing with job ID polling
+
+### Authentication & Authorization Model
+
+**Phase 1 (Localhost):**
+
+**No authentication required** for Phase 1 MVP:
+- Single-user deployment (Carlos only)
+- Localhost-only access (no network exposure)
+- Physical machine security sufficient
+- API endpoints accessible without credentials
+
+**Rationale:**
+- Minimal complexity for internal MVP
+- No cloud security concerns (data never leaves machine)
+- Standard organizational confidentiality policies apply to screening reports
+
+---
+
+**Phase 2 (Cloud Deployment - If Commercializing):**
+
+**Recommendation: API Key Authentication**
+
+**Why API Keys (not OAuth):**
+- **Simpler for NGO users** - No complex OAuth flows, no identity provider setup
+- **Adequate security** - Sufficient for organizational API access (not end-user authentication)
+- **Industry standard** - Familiar pattern for API services
+- **Programmatic access-friendly** - Easy for integrations and SDKs
+
+**API Key Implementation:**
+
+**Generation:**
+- Each NGO customer gets one or more API keys on account creation
+- Keys are UUID-based, cryptographically secure
+- Display once on creation, then hash and store (like passwords)
+
+**Usage:**
+- Include in request header: `Authorization: Bearer <api_key>`
+- Or query parameter for simple integrations: `?api_key=<key>` (less secure, discourage)
+
+**Rotation:**
+- Support multiple active keys per account (for zero-downtime rotation)
+- Customer can generate new key, update integrations, then revoke old key
+- Automatic expiration optional (e.g., 1-year expiration with renewal reminders)
+
+**Permissions:**
+- Per-key permissions for fine-grained access control
+- Example: "screening_read_write", "data_version_read", "admin_full_access"
+- Enables service accounts (e.g., Excel UDF gets read-only key, admin dashboard gets full access)
+
+**Multi-Tenant Data Isolation:**
+
+- Each API key associated with a specific NGO tenant
+- Database queries scoped by tenant ID
+- No cross-tenant data access possible
+- Screening results, history, configuration all isolated per tenant
+
+**Rate Limiting (tied to authentication):**
+
+- Rate limits enforced per API key
+- Tiered based on subscription (Tier 1: 500/year, Tier 2: 1,500/year)
+- Monthly or annual quota tracking
+- Burst allowances for batch operations (e.g., screen 100 at once within quota)
+
+**High Safety Standards - Security Best Practices:**
+
+1. **Encryption in Transit:** HTTPS only, TLS 1.2+ (no plain HTTP)
+2. **Encryption at Rest:** Database encryption for screening history
+3. **Key Storage:** Hash API keys with bcrypt/argon2 before storage
+4. **Audit Logging:** Log all API calls (tenant, endpoint, timestamp, result code)
+5. **Breach Response:** Immediate key revocation capability, customer notification
+6. **DDoS Protection:** Cloudflare or similar in front of API
+7. **Input Validation:** Strict validation on all inputs (file size limits, column count, organization name length)
+8. **Error Handling:** Generic error messages to external users (detailed logs internally only)
+
+### SDK & Programmatic Access
+
+**Phase 1: No SDK Needed**
+
+**Current Clients:**
+- Streamlit web app (calls API internally)
+- No external integrations
+
+**Confirmed:** SDK deferred for Phase 1.
+
+---
+
+**Phase 2: API Service Model Opportunity**
+
+**Strategic Opportunity:** Offering API access in Phase 2 creates a new revenue stream and competitive advantage.
+
+**API Service Model = Three Product Offerings:**
+
+1. **Streamlit UI Subscription** (primary offering)
+   - $200-500/year for web-based screening
+   - Target: Non-technical compliance officers
+
+2. **API Access Subscription** (new offering - programmatic integration)
+   - Same pricing tiers, but customers use API directly
+   - Target: NGOs with existing grant management systems
+   - Value prop: "Integrate OFAC screening into your Salesforce/Fluxx workflow"
+
+3. **Hybrid Subscription** (best value)
+   - UI + API access combined
+   - Slightly higher price ($300-700/year)
+   - Target: NGOs wanting both manual screening AND automated integration
+
+**Phase 2 API Access Benefits:**
+
+**For Customers:**
+- Integrate screening into grant management platforms (Salesforce, Fluxx, custom systems)
+- Automate screening workflows (trigger on grant submission, not manual batch)
+- Build custom dashboards and reporting on top of screening API
+- Re-screen existing partners automatically on schedule
+
+**For You (Competitive Advantage):**
+- **Differentiate from commercial tools** that only offer UI access
+- **Higher perceived value** - "Not just a tool, it's an API service"
+- **Stickier customers** - API integrations create switching costs
+- **Developer-friendly brand** - Appeal to technically sophisticated NGOs
+
+**Phase 2 SDK Considerations:**
+
+If offering API access, SDKs significantly improve developer experience:
+
+**Python SDK** (Priority 1 - Most NGOs use Python for data work)
+```python
+from ofac_screening import OFACClient
+
+client = OFACClient(api_key="...")
+results = client.screen_batch(file="grants_q1.xlsx")
+print(results.summary)
+```
+
+**JavaScript SDK** (Priority 2 - For web integrations)
+```javascript
+import { OFACClient } from '@ofac-screening/sdk';
+const client = new OFACClient({ apiKey: '...' });
+const results = await client.screenBatch(file);
+```
+
+**SDK Benefits:**
+- Simpler for customers (vs. raw HTTP requests)
+- Built-in authentication, error handling, retries
+- Type safety (TypeScript definitions, Python type hints)
+- Examples and documentation
+
+**SDK Effort:**
+- Python SDK: ~2-3 weeks development
+- JavaScript SDK: ~2-3 weeks development
+- Worth it if 2+ customers request programmatic access
+
+---
+
+**Recommendation:**
+
+**Phase 2 Plan:**
+1. Launch with API access as optional add-on to UI subscription
+2. Provide API documentation (no SDK initially)
+3. **If 2+ customers request programmatic access** → Build Python SDK
+4. **If SDK validates demand** → Expand to JavaScript SDK
+5. **Phase 3:** Consider open-sourcing SDKs for community growth
+
+**Decision Point:** Revisit SDK priority at Month 12 commercial decision gate based on customer feedback.
+
+### Implementation Considerations
+
+**Technology Stack Decisions:**
+
+**API Framework: FastAPI (Python)**
+- **Pros:** Modern, async-friendly, auto-generates OpenAPI docs, type hints
+- **Cons:** Slightly more complex than Flask, newer ecosystem
+- **Verdict:** Recommended for Phase 1 and Phase 2 (excellent for API-first design)
+
+**Alternative: Flask + Flask-RESTful**
+- **Pros:** Mature, simpler, huge ecosystem
+- **Cons:** Less modern, manual API documentation
+- **Verdict:** Acceptable fallback if FastAPI learning curve is issue
+
+**Data Processing: Pandas + rapidfuzz**
+- **Pandas:** Load OFAC CSV files, Excel/CSV uploads
+- **rapidfuzz:** Fuzzy string matching (token_sort_ratio method)
+- **Confirmed:** No changes needed from conceptual design
+
+**Deployment (Phase 1):**
+- **Local Python environment** or **Docker container**
+- Single command startup: `docker-compose up` or `python run_api.py`
+- No cloud dependencies
+
+**Deployment (Phase 2):**
+- **Cloud platform:** Railway (simplest), AWS ECS (enterprise-grade), Heroku (legacy but easy)
+- **Database:** PostgreSQL for screening history, user management
+- **File storage:** S3 for OFAC data cache
+- **CDN/DDoS:** Cloudflare for API protection
+
+**API Documentation:**
+
+**Phase 1:**
+- Auto-generated OpenAPI/Swagger docs from FastAPI
+- Accessible at `http://localhost:8000/docs`
+- Interactive API testing via Swagger UI
+
+**Phase 2:**
+- Hosted API documentation (ReadTheDocs or similar)
+- Interactive examples with "Try It Out" functionality
+- Code snippets for Python, JavaScript, cURL
+- Authentication guide with API key setup instructions
+
+**Testing Strategy:**
+
+**Unit Tests:**
+- Test matching engine (exact, fuzzy, alias detection)
+- Test classification logic (OK/REVIEW/NOK rules)
+- Test humanitarian context detection
+- Test country-aware scoring
+
+**Integration Tests:**
+- Test API endpoints end-to-end
+- Test file upload and processing
+- Test error scenarios (invalid files, missing data)
+- Test OFAC data update mechanism
+
+**Load Testing (Phase 2):**
+- Batch screening performance (100 orgs in <5 minutes)
+- Concurrent user testing (10 users screening simultaneously)
+- Rate limiting enforcement under load
+
+## Project Scoping & Phased Development
+
+### MVP Strategy & Philosophy
+
+**MVP Approach: Problem-Solving MVP**
+
+The OFAC Sanctions Screening Tool follows a **Problem-Solving MVP** strategy focused on solving the core bulk screening problem with minimal features. Phase 1 validates the solution internally through real grant rounds before considering commercial expansion.
+
+**Strategic Rationale:**
+
+- **Fast path to validated learning** - 3 grant rounds (3-6 months) proves or disproves the concept
+- **Minimal upfront investment** - Localhost deployment, no cloud costs, single-user simplicity
+- **De-risk before commercialization** - Prove internal value before investing in Phase 2 cloud infrastructure
+- **Flexibility to pivot** - API-first architecture enables future expansion (Excel UDF, commercial SaaS) without backend rewrite
+
+**Phase 1 Success = Internal validation complete, regardless of commercial decision**
+
+Even if Phase 2 commercialization doesn't happen, the internal tool delivers:
+- $2,000-$10,000/year cost avoidance
+- 25-35 hours/year time savings
+- Zero false negatives (compliance risk mitigation)
+- Audit-ready documentation
+
+**Resource Requirements (Phase 1):**
+
+- **Developer:** 1 person (Carlos or contractor)
+- **Technical Skills:** Python (FastAPI, Pandas, rapidfuzz), Streamlit basics
+- **Time Estimate:** 6-10 weeks development + 3-6 months validation
+- **Infrastructure:** Local machine only (no cloud services)
+
+### MVP Feature Set (Phase 1: Months 1-3)
+
+**Core User Journeys Supported:**
+
+1. **Grant Round Screening (Primary Journey)**
+   - Upload Excel/CSV file with grant applicant organizations
+   - Screen 50-100 organizations in <5 minutes
+   - Download comprehensive 3-sheet Excel report
+   - Save to compliance shared drive with OFAC version in filename
+
+2. **Exception Management (Secondary Journey)**
+   - Review REVIEW/NOK cases in Sheet 3 (Exceptions Only)
+   - Escalate to legal counsel with full match details
+   - Add analyst notes documenting resolution
+   - Re-screen individual organizations for status changes
+
+**Must-Have Capabilities:**
+
+**1. Batch Screening Workflow**
+- File upload (Excel `.xlsx` or CSV `.csv`)
+- Auto-column detection ("Institution", "Country", "Project Description")
+- Manual column mapping fallback (Streamlit UI)
+- Progress indicator during processing
+- Screening speed: <5 minutes for 100 organizations
+
+**2. Fuzzy Matching & Classification Engine**
+- Fuzzy matching with rapidfuzz (token_sort_ratio, 80% threshold)
+- Country-aware scoring (boost match if country aligns, de-boost if mismatch)
+- Match type detection (Exact/Fuzzy/Alias)
+- Classification logic (OK/REVIEW/NOK)
+- **Universal humanitarian context detection** (ALL sanctioned countries, not Syria-only)
+- General License mapping (GL-21 Syria, GL D-1 Iran, GL-41 Venezuela, etc.)
+
+**3. OFAC Data Management**
+- Download SDN + Consolidated lists (6 CSV files total)
+- Local cache in `data/` directory
+- Version tracking via `version.json`
+- Manual update controls ("Check for Updates", "Update Now" buttons)
+- Data freshness display with warnings (7/14/30 days thresholds)
+- Atomic download/swap (prevent corrupted data states)
+
+**4. Comprehensive Excel Reporting**
+- **Sheet 1:** Summary statistics (metadata, counts, data freshness)
+- **Sheet 2:** Detailed results (all organizations with full audit trail)
+- **Sheet 3:** Exceptions only (REVIEW + NOK, sorted by risk level)
+- Audit trail fields: screening ID, date, OFAC version, match scores, entity IDs, programs, General Licenses
+- Analyst notes field for manual annotations
+- 10-year retention-ready format
+
+**5. API Endpoints (FastAPI Service)**
+- `POST /api/v1/screen/batch` - Batch screening (primary workflow)
+- `POST /api/v1/screen/single` - Single organization screening (spot checks, re-screening)
+- `GET /api/v1/data/version` - Check OFAC data freshness
+- `POST /api/v1/data/update` - Trigger OFAC data update
+
+**6. Streamlit Web Application**
+- Clean, simple UI (no intimidating command lines)
+- File upload with drag-and-drop
+- Column mapping interface
+- Results display (color-coded: green OK, yellow REVIEW, red NOK)
+- Summary statistics dashboard
+- Excel report download button
+- OFAC data version display with freshness indicator
+
+**7. Local Deployment Package**
+- Docker container OR Python installer script
+- Single command startup: `docker-compose up` or `python run.py`
+- Localhost only (`localhost:8000` API, `localhost:8501` Streamlit)
+- No authentication (single-user Phase 1)
+- Data persistence via local file system
+
+**MVP Success Definition:**
+
+Carlos can screen an entire grant round (50-100 organizations) in <1 hour, download audit-ready report, present to board without modification, and pass external auditor review.
+
+### Post-MVP Features
+
+**Phase 1.5 (Months 4-6): Conditional Enhancements**
+
+**Proceed ONLY if Phase 1 validation successful AND usage validates need:**
+
+**Excel Custom Function (UDF via xlwings)**
+- Function: `=OFAC_CHECK(organization_name, [country], [purpose])`
+- Returns: "OK" (green) | "NOK: [details]" (red) | "REVIEW: [context]" (yellow)
+- Calls existing API service (zero backend code duplication)
+- Excel ribbon with API controls and status
+
+**Decision Gate:** Add Excel UDF ONLY if:
+- ✅ Phase 1 validation successful (3 grant rounds completed)
+- ✅ Carlos identifies need for ad-hoc screening between grant rounds
+- ✅ Program officers request quick pre-screening capability
+- ✅ Workflow analysis shows value in in-spreadsheet screening
+
+**If usage doesn't validate need → Skip Phase 1.5, focus on Phase 2 commercial validation**
+
+---
+
+**Phase 2 (Months 9-12+): Commercial SaaS (If Commercializing)**
+
+**Proceed ONLY if Month 12 decision = "Go Commercial"**
+
+**Commercial decision criteria:**
+- ✅ All Phase 1 success criteria met convincingly
+- ✅ 2-3 peer NGOs express genuine interest after live demo
+- ✅ At least 1 peer NGO states explicit willingness to pay $200-500/year
+- ✅ Board endorses commercial exploration
+
+**Phase 2 Features:**
+
+**1. Cloud Infrastructure**
+- Hosted FastAPI on cloud platform (Railway/AWS/Heroku)
+- PostgreSQL database for screening history, user management
+- S3 for OFAC data cache
+- HTTPS with TLS 1.2+ encryption
+
+**2. Authentication & Multi-Tenancy**
+- API key authentication (Bearer token)
+- Multi-tenant data isolation (each NGO sees only their data)
+- Role-based access control (Compliance Officer, Executive, Auditor roles)
+- API key rotation and management
+
+**3. Rate Limiting & Quotas**
+- Tiered quotas (Tier 1: 500/year, Tier 2: 1,500/year)
+- Monthly/annual tracking
+- Overage handling ($0.50/screening or upgrade prompts)
+
+**4. Enhanced Frontend**
+- React rebuild (modern, professional UI)
+- Custom branding
+- Responsive design (tablet/mobile support)
+- White-label capabilities for NGO partners
+
+**5. API Service Model (Strategic Opportunity)**
+- **Three product offerings:**
+  1. Streamlit UI Subscription ($200-500/year)
+  2. API Access Subscription (programmatic integration for grant management systems)
+  3. Hybrid Subscription (UI + API, $300-700/year)
+- API documentation (ReadTheDocs)
+- Python SDK (if 2+ customers request programmatic access)
+- JavaScript SDK (if SDK demand validates)
+
+**6. Compliance & Security**
+- GDPR legal review (if European NGO customers)
+- Audit logging (all API calls tracked)
+- Encryption at rest and in transit
+- Breach response procedures
+- Data processing agreements for EU customers
+
+**7. Customer Success**
+- Onboarding tutorials
+- Email support
+- Quarterly compliance webinars
+- Peer knowledge-sharing community
+
+---
+
+**Phase 3 (Year 2-3+): Platform Expansion (If Phase 2 Succeeds)**
+
+**Future vision if commercial success proven:**
+
+**1. Additional Integrations**
+- Salesforce integration (automated screening on grant submission)
+- Fluxx integration (grant management platform)
+- Zapier connectors (workflow automation)
+- CLI tool (command-line power users)
+
+**2. Enhanced Matching**
+- ML-based entity resolution
+- Historical screening tracking (flag previously cleared partners now sanctioned)
+- Anomaly detection (unusual patterns in screening results)
+
+**3. Multi-List Support**
+- UN sanctions lists
+- EU sanctions lists
+- UK OFSI lists
+- Comprehensive global sanctions coverage
+
+**4. Advanced Features**
+- Mobile app (iOS/Android) for field officers
+- Automated workflows (scheduled re-screening, email notifications)
+- Custom reporting templates
+- Bulk historical re-screening
+
+**5. Open Source Community**
+- Open-source SDKs on GitHub
+- Community contributions welcome
+- Integration marketplace
+- Public roadmap and feature voting
+
+### Deferred or Not Needed
+
+**Features Explicitly Deferred (Not in Phase 1 MVP):**
+
+- ❌ **Automated OFAC data updates** - Manual "Update Now" is sufficient Phase 1 (automation Phase 2)
+- ❌ **Screening history database** - Excel reports to file system Phase 1 (database Phase 2)
+- ❌ **JSON API input** - File upload only Phase 1 (JSON payloads Phase 2)
+- ❌ **Advanced error recovery** - Basic error messages Phase 1 (detailed recovery Phase 2)
+- ❌ **PDF reports** - Excel meets requirements (PDF Phase 2+)
+- ❌ **Async batch processing** - Synchronous fine for <100 orgs (async Phase 2+)
+- ❌ **Accessibility enhancements** - Streamlit defaults Phase 1 (WCAG 2.1 AA Phase 2)
+
+**Features Not Needed (Ever):**
+
+- ❌ **Mobile app** - Not relevant for grant screening workflow (desktop-centric)
+- ❌ **Real-time collaboration** - Single-user workflow, no concurrent editing
+- ❌ **Advanced ML matching** - Fuzzy matching sufficient and more explainable/trustworthy
+- ❌ **Blockchain/immutable audit** - Overkill for compliance documentation
+
+### Risk Mitigation Strategy
+
+**Technical Risks & Mitigation:**
+
+**Risk 1: Universal Humanitarian Context Detection Complexity**
+- **Risk:** Implementing General License detection for ALL sanctioned countries (not just Syria) is more complex than Syria-only
+- **Mitigation:** Full universal pattern implemented in Phase 1 (confirmed as critical requirement)
+- **Fallback:** If implementation proves too complex, start with top 3 countries (Syria, Iran, Venezuela) and add others incrementally
+- **Validation:** Test with real grant data from December 2025 round (Syria, Iraq, Lebanon, Sudan, Pakistan visible in screenshots)
+
+**Risk 2: Fuzzy Matching False Positive Rate**
+- **Risk:** Too many false positives (>50%) creates "review fatigue" and undermines trust
+- **Mitigation:** 
+  - Conservative 80% threshold (adjustable based on Phase 1 learning)
+  - Country-aware scoring reduces false positives
+  - Human-in-the-loop for all REVIEW cases (no auto-clearing)
+- **Validation:** Track false positive rate during first 3 grant rounds, adjust threshold if needed
+- **Acceptance Criteria:** 10-30% false positive rate acceptable (per success criteria)
+
+**Risk 3: OFAC Data Corruption**
+- **Risk:** Partial download or network failure corrupts local OFAC cache
+- **Mitigation:**
+  - Atomic download/swap (download to temp, validate, then swap)
+  - Rollback if any file fails validation
+  - Keep last 3 versions as emergency backup
+- **Validation:** Test network failure scenarios during development
+
+**Risk 4: Excel Report Compatibility**
+- **Risk:** Excel format compatibility issues across different Excel versions or LibreOffice
+- **Mitigation:**
+  - Use `.xlsx` format (OpenXML standard, widely compatible)
+  - Pandas ExcelWriter with openpyxl engine
+  - Test on Windows Excel, Mac Excel, LibreOffice Calc
+- **Validation:** Validate with Carlos's actual Excel version during development
+
+---
+
+**Market Risks & Validation:**
+
+**Risk 1: Commercial Demand Uncertainty**
+- **Risk:** Peer NGOs express polite interest but don't actually subscribe
+- **Mitigation:**
+  - Build-first, commercialize-later approach (Phase 1 proves internal value first)
+  - Month 12 decision gate requires explicit willingness to pay (not just "sounds interesting")
+  - Internal tool success = win regardless of commercial outcome
+- **Validation:** Live demos at NGO conferences, informal peer conversations, explicit pricing discussions
+- **Contingency:** If commercial interest weak, keep as internal tool indefinitely (still $2K-$10K/year value)
+
+**Risk 2: Competitive Response**
+- **Risk:** Commercial vendors lower prices or add low-frequency tiers in response
+- **Mitigation:**
+  - Humanitarian context intelligence differentiator (hard for generic tools to replicate)
+  - Transparency/explainability vs. black-box trust
+  - API service model (not just UI access)
+  - Already validated internal use case (commercial is upside, not necessity)
+- **Validation:** Monitor commercial tool pricing during Phase 1 validation period
+- **Contingency:** Adjust Phase 2 pricing ($200-500/year has significant margin below commercial $2K-$10K)
+
+**Risk 3: OFAC Policy Changes**
+- **Risk:** OFAC changes data formats, API endpoints, or regulatory framework
+- **Mitigation:**
+  - Design for change: CSV parsing flexible, OFAC endpoint configurable
+  - General License mapping externalized (easy to update as regulations evolve)
+  - Version tracking enables "screening valid as of [date]" defensibility
+- **Validation:** Monitor OFAC website for policy announcements
+- **Contingency:** OFAC data format changes require code updates (acceptable maintenance cost)
+
+---
+
+**Resource Risks & Contingency:**
+
+**Risk 1: Development Time Overruns**
+- **Risk:** Phase 1 takes longer than 6-10 weeks (learning curve, unexpected complexity)
+- **Mitigation:**
+  - Start with absolute minimum (4 endpoints + basic Streamlit UI)
+  - Skip "nice-to-have" features (analyst notes, data freshness warnings can be added later)
+  - Leverage existing Python libraries (Pandas, rapidfuzz, FastAPI, Streamlit)
+- **Contingency - Ultra-Lean MVP:** Remove single org re-screening, simplify UI, skip analyst notes field
+- **Acceptance:** Even 3-month development still delivers value within single grant round cycle
+
+**Risk 2: Carlos's Limited Availability**
+- **Risk:** Carlos wears multiple hats (CFO + Compliance + Grant Review), limited time for tool development/testing
+- **Mitigation:**
+  - Problem-Solving MVP keeps scope minimal
+  - Contractor option if internal capacity insufficient
+  - Validation can happen gradually (1 grant round at a time, not urgent deadline)
+- **Contingency:** Extend Phase 1 timeline to 6-12 months instead of 3-6 months (still acceptable)
+
+**Risk 3: Technical Skill Gaps**
+- **Risk:** Python/FastAPI/Streamlit learning curve slows development
+- **Mitigation:**
+  - Comprehensive PRD reduces ambiguity (clear requirements)
+  - FastAPI auto-generates API docs (reduces documentation burden)
+  - Streamlit is beginner-friendly (rapid UI development)
+  - Existing conceptual design documents provide technical roadmap
+- **Contingency:** Hire contractor for initial implementation, Carlos maintains/operates
+
+**Risk 4: Insufficient Testing Before Launch**
+- **Risk:** Bugs or data quality issues discovered during first real grant round
+- **Mitigation:**
+  - Test with sample data before real grant round (use December 2025 screenshots as test data)
+  - Parallel run: Use tool + manual screening for first grant round (validate results match)
+  - Spot-check random sample against OFAC.gov manually
+- **Contingency:** If serious bugs discovered, revert to manual screening for that round, fix issues before next round
+
+## Functional Requirements
+
+### Organization Screening & Matching
+
+**FR1:** The system can screen a single organization name against OFAC SDN and Consolidated sanctions lists
+
+**FR2:** The system can screen multiple organizations in a single batch operation
+
+**FR3:** The system can detect exact name matches between input organizations and OFAC entities
+
+**FR4:** The system can detect fuzzy name matches using configurable similarity thresholds
+
+**FR5:** The system can detect alias variations of sanctioned entities (organization known by multiple names)
+
+**FR6:** The system can incorporate country information to boost or de-boost match confidence scores
+
+**FR7:** The system can incorporate project purpose/description to inform humanitarian context detection
+
+**FR8:** The system can classify screening results into three categories: OK (clear), REVIEW (manual review needed), or NOK (blocked)
+
+**FR9:** The system can provide confidence scores for all matches (percentage similarity)
+
+**FR10:** The system can identify whether a match comes from SDN List or Consolidated List
+
+**FR11:** The system can screen 100 organizations in less than 5 minutes
+
+**FR12:** The system can screen a single organization in less than 2 seconds
+
+### OFAC Data Management & Freshness
+
+**FR13:** The system can download OFAC SDN list files (SDN.CSV, ALT.CSV, ADD.CSV) from official government sources
+
+**FR14:** The system can download OFAC Consolidated list files (CONS_PRIM.CSV, CONS_ALT.CSV, CONS_ADD.CSV) from official government sources
+
+**FR15:** The system can store OFAC list data in a local cache for offline screening
+
+**FR16:** The system can track the version/date of all OFAC data files currently in use
+
+**FR17:** The system can detect when OFAC data is stale (older than configurable thresholds: 7/14/30 days)
+
+**FR18:** The system can check for OFAC data updates without automatically downloading
+
+**FR19:** The system can update OFAC data on user command
+
+**FR20:** The system can validate downloaded OFAC files before replacing existing data (atomic swap)
+
+**FR21:** The system can rollback to previous OFAC data version if update fails
+
+**FR22:** The system can prevent data corruption during download or update processes
+
+**FR23:** The system can display OFAC data freshness status to users (current/warning/stale/critical)
+
+### Humanitarian Context Intelligence
+
+**FR24:** The system can maintain a registry of sanctioned countries from OFAC programs
+
+**FR25:** The system can detect when an organization operates in a sanctioned country
+
+**FR26:** The system can detect humanitarian aid keywords in project descriptions (humanitarian, aid, relief, medical, emergency, assistance)
+
+**FR27:** The system can combine sanctioned country + humanitarian keywords to identify potential General License applicability
+
+**FR28:** The system can map sanctioned countries to applicable General Licenses (GL-21 for Syria, GL D-1 for Iran, GL-41 for Venezuela, etc.)
+
+**FR29:** The system can flag matches with humanitarian context as REVIEW (not automatic NOK) with General License notes
+
+**FR30:** The system can flag sanctioned country matches WITHOUT humanitarian context as NOK (block)
+
+### Reporting & Audit Trail
+
+**FR31:** The system can generate multi-sheet Excel reports with screening results
+
+**FR32:** The system can include summary statistics in reports (total screened, OK/REVIEW/NOK counts, OFAC data version, screening date)
+
+**FR33:** The system can include detailed results for all screened organizations in reports
+
+**FR34:** The system can include exception-only view (REVIEW + NOK cases only) in reports
+
+**FR35:** The system can include all audit trail fields in reports (screening ID, timestamp, OFAC version, match scores, entity IDs, programs, General Licenses)
+
+**FR36:** The system can provide analyst notes fields for manual annotations and resolution tracking
+
+**FR37:** The system can generate reports that meet 10-year retention compliance requirements
+
+**FR38:** The system can embed OFAC data version timestamps in every report
+
+**FR39:** The system can color-code screening results (green=OK, yellow=REVIEW, red=NOK)
+
+**FR40:** The system can sort exception cases by risk level
+
+**FR41:** The system can display match scores with transparency (percentage, match type, country alignment)
+
+**FR42:** The system can provide downloadable reports in Excel format
+
+### Exception Management & Review Workflow
+
+**FR43:** The system can display complete match details for REVIEW and NOK cases (entity name, match score, match type, OFAC list, country alignment, entity ID, program, risk level)
+
+**FR44:** The system can classify risk levels for matches (Low/Medium/High)
+
+**FR45:** The system can provide General License applicability notes for humanitarian cases
+
+**FR46:** The system can support re-screening of individual organizations for status changes
+
+**FR47:** The system can display country alignment status (Match/Mismatch/N/A)
+
+**FR48:** The system can preserve analyst notes and resolution tracking in updated reports
+
+**FR49:** The system can support version control for updated screening reports
+
+### API Service Layer
+
+**FR50:** The system can expose a batch screening API endpoint that accepts file uploads
+
+**FR51:** The system can expose a single organization screening API endpoint that accepts JSON requests
+
+**FR52:** The system can expose an OFAC data version check API endpoint
+
+**FR53:** The system can expose an OFAC data update trigger API endpoint
+
+**FR54:** The system can auto-generate API documentation from code
+
+**FR55:** The system can return structured JSON responses with screening results
+
+**FR56:** The system can return appropriate HTTP status codes for success/error conditions
+
+**FR57:** The system can validate API request inputs (file format, required fields, data types)
+
+**FR58:** The system can provide detailed error messages for invalid requests
+
+**FR59:** The system can handle file uploads via multipart/form-data
+
+**FR60:** The system can handle JSON payloads for single organization screening
+
+### User Interface & File Processing
+
+**FR61:** The system can accept Excel file uploads (.xlsx format)
+
+**FR62:** The system can accept CSV file uploads (.csv format)
+
+**FR63:** The system can auto-detect column names for organization, country, and project description
+
+**FR64:** The system can provide manual column mapping when auto-detection fails
+
+**FR65:** The system can display progress indicators during batch screening operations
+
+**FR66:** The system can provide file upload via drag-and-drop interface
+
+**FR67:** The system can display screening results with color-coding and filtering
+
+**FR68:** The system can display summary statistics dashboard
+
+**FR69:** The system can provide OFAC data version display with freshness indicators
+
+**FR70:** The system can provide manual controls for checking and updating OFAC data
+
+**FR71:** The system can enable report download via single-click action
+
+### Data Version Control & Traceability
+
+**FR72:** The system can assign unique screening IDs to each screening operation
+
+**FR73:** The system can timestamp all screening operations
+
+**FR74:** The system can link every screening result to the specific OFAC data version used
+
+**FR75:** The system can track OFAC data age in days
+
+**FR76:** The system can maintain version history for OFAC data updates
+
+**FR77:** The system can enable spot-check validation against official OFAC sources
+
+**FR78:** The system can provide complete traceability for all screening decisions
+
+**FR79:** The system can support audit validation of screening methodology and results
+
+## Non-Functional Requirements
+
+### Performance
+
+**NFR1:** Batch screening operations must complete in less than 5 minutes for 100 organizations
+
+**NFR2:** Single organization screening operations must return results in less than 2 seconds
+
+**NFR3:** The system must display progress indicators for operations expected to take more than 3 seconds
+
+**NFR4:** OFAC data version checks must complete in less than 1 second
+
+**NFR5:** File upload and column detection must provide feedback within 2 seconds of user action
+
+**NFR6:** The Streamlit web application must be responsive to user interactions with no perceived lag (<500ms for UI updates)
+
+**NFR7:** Excel report generation and download must complete within 10 seconds for reports containing up to 200 organizations
+
+**NFR8:** OFAC data update downloads must complete within 2 minutes under normal network conditions
+
+### Security & Privacy
+
+**Phase 1 (Local Deployment):**
+
+**NFR9:** The system must run exclusively on localhost with no network exposure beyond the local machine
+
+**NFR10:** The system must not transmit screening data or results to external services
+
+**NFR11:** The system must store all OFAC data and screening reports on the local file system only
+
+**NFR12:** The system must validate all OFAC data downloads for integrity before replacing cached data
+
+**Phase 2 (Cloud Deployment - If Commercializing):**
+
+**NFR13:** All API communications must use HTTPS with TLS 1.2 or higher encryption
+
+**NFR14:** All API keys must be hashed using bcrypt or argon2 before storage
+
+**NFR15:** All screening history data must be encrypted at rest in the database
+
+**NFR16:** The system must enforce multi-tenant data isolation with no possibility of cross-tenant data access
+
+**NFR17:** The system must log all API requests with tenant ID, endpoint, timestamp, and result code for audit purposes
+
+**NFR18:** The system must implement rate limiting per API key to prevent abuse
+
+**NFR19:** The system must validate all user inputs with strict limits (file size ≤10MB, column count ≤50, organization name length ≤500 characters)
+
+**NFR20:** The system must provide generic error messages to external users while logging detailed errors internally only
+
+**NFR21:** The system must support immediate API key revocation in case of security incidents
+
+### Reliability & Accuracy
+
+**NFR22:** The system must achieve zero false negatives (100% recall) for sanctioned entity detection
+
+**NFR23:** The system must maintain acceptable false positive rate (10-30% of REVIEW/NOK flags may be false matches)
+
+**NFR24:** OFAC data updates must use atomic download/swap operations to prevent data corruption
+
+**NFR25:** The system must rollback to previous OFAC data version if any file fails validation during update
+
+**NFR26:** The system must maintain last 3 OFAC data versions as emergency backup
+
+**NFR27:** The system must preserve data integrity across application restarts (local cache survives)
+
+**NFR28:** The system must handle network failures gracefully without corrupting OFAC data cache
+
+**NFR29:** The system must provide clear error messages and recovery instructions for failure scenarios
+
+### Maintainability & Adaptability
+
+**NFR30:** The system must externalize General License mappings to enable updates without code changes
+
+**NFR31:** The system must externalize sanctioned country registry to accommodate regulatory changes
+
+**NFR32:** The system must configure OFAC data source URLs to enable endpoint changes without code modification
+
+**NFR33:** The system must support adjustable fuzzy matching thresholds without requiring redeployment
+
+**NFR34:** The system must use structured logging for debugging and troubleshooting
+
+**NFR35:** The API must auto-generate OpenAPI/Swagger documentation from code
+
+**NFR36:** The system must separate business logic from data access layers to enable technology changes
+
+**NFR37:** The system must use configuration files for environment-specific settings (localhost vs. cloud)
+
+### Usability & Trust
+
+**NFR38:** The system must display match transparency information (percentage scores, match types, country alignment) for all screening results
+
+**NFR39:** The system must embed OFAC data version timestamps in all reports and API responses
+
+**NFR40:** The system must provide data freshness warnings at configurable thresholds (7/14/30 days)
+
+**NFR41:** The system must use color-coding conventions consistently (green=OK, yellow=REVIEW, red=NOK)
+
+**NFR42:** The system must generate reports in widely compatible Excel format (.xlsx) without requiring proprietary software
+
+**NFR43:** The system must enable manual spot-check validation against official OFAC sources
+
+**NFR44:** The system must provide complete audit trails linking every screening decision to supporting evidence
+
+**NFR45:** The Streamlit UI must be intuitive for non-technical compliance officers without requiring training beyond initial setup
+
+**NFR46:** Error messages must be actionable and non-technical (e.g., "Could not connect to OFAC website" vs. "HTTP 503 error")
+
+### Compliance & Audit
+
+**NFR47:** The system must generate reports that meet 10-year retention compliance requirements
+
+**NFR48:** The system must include all required audit trail fields in reports (screening ID, timestamp, OFAC version, match scores, entity IDs, programs, General Licenses, analyst notes)
+
+**NFR49:** The system must maintain version history for OFAC data updates for audit purposes
+
+**NFR50:** The system must provide traceability for every screening decision (what data was used, when, what was the result)
+
+**NFR51:** The system must support contemporaneous documentation (timestamp all operations at time of execution)
+
+**NFR52:** Reports must be formatted for professional presentation to boards and external auditors without modification
+
+**NFR53:** The system must enable verification of screening accuracy through reproducible results
