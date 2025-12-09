@@ -98,16 +98,18 @@ workflow_status:
     name: "Solutioning"
     workflows:
       - id: "create-architecture"
-        status: "required"
+        status: "docs/architecture.md"
         agent: "architect"
         command: "/bmad:bmm:workflows:create-architecture"
         output: "System architecture document"
+        completed: "2025-12-09"
 
       - id: "create-epics-and-stories"
-        status: "required"
+        status: "docs/epics.md"
         agent: "pm"
         command: "/bmad:bmm:workflows:create-epics-and-stories"
         output: "Epics and user stories"
+        completed: "2025-12-09"
 
       - id: "test-design"
         status: "recommended"
@@ -122,17 +124,19 @@ workflow_status:
         output: "Architecture quality validation"
 
       - id: "implementation-readiness"
-        status: "required"
+        status: "docs/implementation-readiness-report-2025-12-09.md"
         agent: "architect"
         command: "/bmad:bmm:workflows:implementation-readiness"
         output: "Readiness validation"
+        completed: "2025-12-09"
 
   # Phase 3: Implementation
   - phase: 3
     name: "Implementation"
     workflows:
       - id: "sprint-planning"
-        status: "required"
+        status: "docs/sprint-artifacts/sprint-status.yaml"
         agent: "sm"
         command: "/bmad:bmm:workflows:sprint-planning"
         output: "Sprint plan and tracking"
+        completed: "2025-12-09"
