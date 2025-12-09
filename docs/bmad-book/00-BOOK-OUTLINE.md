@@ -88,7 +88,11 @@ Based on analysis of "Agile Manifesto," "The Pragmatic Programmer," and modern A
 
 ### Front Matter
 - Title Page
-- Copyright & Trademark Notice (BMAD™ and BMAD-METHOD™ are trademarks of BMad Code, LLC)
+- Copyright Notice & Legal
+  * Book Copyright: © Carlos Gorricho, [Year]
+  * BMAD Method Framework: MIT License (open source)
+  * Trademarks: BMAD™ and BMAD-METHOD™ are trademarks of BMad Code, LLC (used with permission/fair use for educational purposes)
+  * Acknowledgment: "This book documents the BMAD Method framework (https://github.com/bmad-code-org/BMAD-METHOD), released under MIT License. The framework is free and open source. BMAD™ and BMAD-METHOD™ are trademarks of BMad Code, LLC."
 - Dedication
 - Foreword (invite BMad Code founder if possible)
 - Preface: Why This Book Exists

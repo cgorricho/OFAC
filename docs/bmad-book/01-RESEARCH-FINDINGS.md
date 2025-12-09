@@ -470,6 +470,73 @@ From OFAC project (in progress):
 
 ---
 
+## Licensing and Trademark Considerations
+
+### BMAD Method Legal Status
+
+**Framework License: MIT (Open Source)**
+- The BMAD Method framework code is MIT licensed
+- Very permissive: Allows commercial use, modification, distribution
+- No restrictions on writing about or teaching the method
+- Source: https://github.com/bmad-code-org/BMAD-METHOD/blob/main/LICENSE
+
+**Trademarks: BMad Code, LLC**
+- BMAD™ and BMAD-METHOD™ are registered trademarks
+- Owned by BMad Code, LLC
+- All rights reserved on the trademark names
+
+### Book Publishing Implications
+
+**What We CAN Do (Legal):**
+1. ✅ Write a book about the BMAD Method (fair use for educational/commentary purposes)
+2. ✅ Use "BMAD Method" in the title with proper trademark acknowledgment (™ symbol)
+3. ✅ Document and teach the methodology (MIT license permits this)
+4. ✅ Show code examples from the framework (MIT license allows reproduction with attribution)
+5. ✅ Critique, analyze, and provide commentary on the method
+
+**What We MUST Do (Legal Requirements):**
+1. ⚠️ Acknowledge trademarks: "BMAD™ and BMAD-METHOD™ are trademarks of BMad Code, LLC"
+2. ⚠️ State MIT License: Reference that the framework is open source under MIT License
+3. ⚠️ Attribution: Give proper credit to BMad Code, LLC and the framework creators
+4. ⚠️ Disclaimer: Make clear the book is independent work, not officially endorsed (unless we get endorsement)
+
+**What We CANNOT Do:**
+1. ❌ Claim ownership of the BMAD Method itself
+2. ❌ Use trademarks in a way that implies official endorsement without permission
+3. ❌ Create confusion about whether the book is an official BMad Code, LLC product
+
+### Recommended Approach
+
+**Front Matter Legal Text:**
+```
+Copyright © [Year] Carlos Gorricho
+
+This book documents the BMAD Method framework, which is released under 
+the MIT License and available at https://github.com/bmad-code-org/BMAD-METHOD.
+
+BMAD™ and BMAD-METHOD™ are trademarks of BMad Code, LLC. All rights reserved.
+This book is an independent work and is not officially endorsed or sponsored 
+by BMad Code, LLC, unless otherwise stated.
+
+The BMAD Method framework code is MIT licensed and freely available. This book 
+provides educational content, commentary, and practical guidance for using the 
+framework, which is permitted under both the MIT License and fair use doctrine.
+```
+
+**Benefits of This Approach:**
+- Legal compliance (trademark acknowledgment + MIT attribution)
+- Establishes independence (no implied false endorsement)
+- Educational fair use defense (commentary on open source software)
+- Respects both trademark rights and open source license
+
+**Optional: Seek Permission/Endorsement**
+- Could contact BMad Code, LLC for official blessing
+- Potential benefits: Foreword, promotional support, community marketplace listing
+- Not legally required, but could be valuable for credibility and marketing
+- Timing: After Leanpub MVP proves market interest
+
+---
+
 ## Key Insights from Research
 
 ### 1. First-Mover Opportunity is REAL
