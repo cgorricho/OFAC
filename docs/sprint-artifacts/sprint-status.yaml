@@ -46,8 +46,8 @@ development_status:
   # ========================================
   epic-1: in-progress
   1-1-project-initialization: done
-  1-2-configuration-system: backlog
-  1-3-core-data-models: backlog
+  1-2-configuration-system: done
+  1-3-core-data-models: done
   1-4-custom-exception-hierarchy: backlog
   1-5-ofac-data-schemas: backlog
   1-6-ofac-data-loader: backlog
