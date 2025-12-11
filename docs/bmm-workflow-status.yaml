@@ -112,10 +112,11 @@ workflow_status:
         completed: "2025-12-09"
 
       - id: "test-design"
-        status: "recommended"
+        status: "docs/test-design-system.md"
         agent: "tea"
         command: "/bmad:bmm:workflows:test-design"
         output: "System testability review"
+        completed: "2025-12-09"
 
       - id: "validate-architecture"
         status: "optional"
