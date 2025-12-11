@@ -6,6 +6,7 @@ This module contains:
 - schemas: OFAC data schemas (SDN, Address, Alias)
 """
 
+from ofac.data.loader import OFACData, OFACDataLoader
 from ofac.data.schemas import (
     ADD_CSV_COLUMNS,
     ALT_CSV_COLUMNS,
@@ -19,6 +20,10 @@ from ofac.data.schemas import (
 )
 
 __all__ = [
+    # Loader
+    "OFACDataLoader",
+    "OFACData",
+    # Schemas
     "SDNType",
     "AltType",
     "SDNEntry",
