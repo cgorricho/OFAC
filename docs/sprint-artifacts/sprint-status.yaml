@@ -44,7 +44,7 @@ development_status:
   # ========================================
   # Epic 1: Foundation & Data Layer
   # ========================================
-  epic-1: in-progress
+  epic-1: done
   1-1-project-initialization: done
   1-2-configuration-system: done
   1-3-core-data-models: done
@@ -52,7 +52,8 @@ development_status:
   1-5-ofac-data-schemas: done
   1-6-ofac-data-loader: done
   1-7-ofac-data-downloader: done
-  1-8-basic-matching-engine: backlog
+  1-8-basic-matching-engine: done
+        epic-1: done
   epic-1-retrospective: optional
 
   # ========================================

@@ -31,6 +31,7 @@ from ofac.core.exceptions import (
     ScreeningInputError,
     ScreeningTimeoutError,
 )
+from ofac.core.matcher import EntityMatcher
 from ofac.core.models import (
     BatchScreeningRequest,
     BatchScreeningResponse,
@@ -46,6 +47,8 @@ __all__ = [
     # Config
     "Settings",
     "settings",
+    # Matcher
+    "EntityMatcher",
     # Models
     "MatchStatus",
     "MatchType",
