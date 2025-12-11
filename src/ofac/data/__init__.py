@@ -18,11 +18,14 @@ from ofac.data.schemas import (
     SDNEntry,
     SDNType,
 )
+from ofac.data.updater import OFACUpdater
 
 __all__ = [
     # Loader
     "OFACDataLoader",
     "OFACData",
+    # Updater
+    "OFACUpdater",
     # Schemas
     "SDNType",
     "AltType",
@@ -34,3 +37,4 @@ __all__ = [
     "ALT_CSV_COLUMNS",
     "ADD_CSV_COLUMNS",
 ]
+
