@@ -12,6 +12,10 @@ Usage:
 import pandas as pd
 import streamlit as st
 
+from ofac.core.models import MatchType
+from ofac.core.risk import classify_risk_level
+from ofac.streamlit.components.export import render_export_button
+
 
 def _get_status_badge(status: str) -> str:
     """Get HTML badge for status.
@@ -54,7 +58,10 @@ def render_results() -> None:
     st.markdown("### 📊 Screening Results")
 
     # Check if results exist
-    if "screening_results" not in st.session_state or st.session_state["screening_results"] is None:
+    if (
+        "screening_results" not in st.session_state
+        or st.session_state["screening_results"] is None
+    ):
         st.error("No screening results available. Please run screening first.")
         if st.button("Back to Screening"):
             from ofac.streamlit.state import set_workflow_step
@@ -123,29 +130,46 @@ def render_results() -> None:
         st.markdown("#### Match Details")
         for _idx, row in df.iterrows():
             entity_country = row.get("Country", "")
-            with st.expander(f"{row['Entity Name']} - {row['Status']} (Score: {row['Score']})"):
+            with st.expander(
+                f"{row['Entity Name']} - {row['Status']} (Score: {row['Score']})"
+            ):
                 if row["Match Details"]:
                     for match in row["Match Details"]:
                         # Calculate risk level
-                        match_score = match.get('match_score', 0)
-                        match_type_str = match.get('match_type', 'FUZZY')
-                        match_type = MatchType.EXACT if match_type_str == 'EXACT' else MatchType.FUZZY
-                        country_match = match.get('country_match', False)
-                        risk_level = classify_risk_level(match_score, match_type, country_match)
+                        match_score = match.get("match_score", 0)
+                        match_type_str = match.get("match_type", "FUZZY")
+                        match_type = (
+                            MatchType.EXACT
+                            if match_type_str == "EXACT"
+                            else MatchType.FUZZY
+                        )
+                        country_match = match.get("country_match", False)
+                        risk_level = classify_risk_level(
+                            match_score, match_type, country_match
+                        )
 
                         # Risk level badge
-                        risk_color = {"HIGH": "red", "MEDIUM": "orange", "LOW": "yellow"}.get(risk_level.value, "gray")
-                        st.markdown(f"**Risk Level:** <span style='color: {risk_color}; font-weight: bold;'>{risk_level.value}</span>", unsafe_allow_html=True)
+                        risk_color = {
+                            "HIGH": "red",
+                            "MEDIUM": "orange",
+                            "LOW": "yellow",
+                        }.get(risk_level.value, "gray")
+                        st.markdown(
+                            f"**Risk Level:** <span style='color: {risk_color}; font-weight: bold;'>{risk_level.value}</span>",
+                            unsafe_allow_html=True,
+                        )
 
                         st.write(f"**SDN Name:** {match.get('sdn_name', 'N/A')}")
                         st.write(f"**SDN Type:** {match.get('sdn_type', 'N/A')}")
                         st.write(f"**Match Type:** {match.get('match_type', 'N/A')}")
                         st.write(f"**Match Score:** {match.get('match_score', 0)}%")
-                        st.write(f"**Match Algorithm:** {match.get('match_type', 'N/A')}")
+                        st.write(
+                            f"**Match Algorithm:** {match.get('match_type', 'N/A')}"
+                        )
 
                         # Country alignment display
-                        ofac_country = match.get('country')
-                        country_match = match.get('country_match', False)
+                        ofac_country = match.get("country")
+                        country_match = match.get("country_match", False)
                         alignment = _get_country_alignment_display(
                             entity_country, ofac_country, country_match
                         )
@@ -155,18 +179,18 @@ def render_results() -> None:
                         st.write(f"**Country Alignment:** {alignment}")
 
                         # OFAC entity ID and programs
-                        ent_num = match.get('ent_num')
+                        ent_num = match.get("ent_num")
                         if ent_num:
                             st.write(f"**OFAC Entity ID:** {ent_num}")
-                        programs = match.get('programs', [])
+                        programs = match.get("programs", [])
                         if programs:
                             st.write(f"**Programs:** {', '.join(programs)}")
                         else:
                             st.write("**Programs:** N/A")
 
                         # General License notes
-                        gl_note = row.get('General License', 'N/A')
-                        if gl_note and gl_note != 'N/A':
+                        gl_note = row.get("General License", "N/A")
+                        if gl_note and gl_note != "N/A":
                             st.write(f"**General License Notes:** {gl_note}")
 
                         st.divider()
@@ -174,13 +198,8 @@ def render_results() -> None:
                     st.info("No matches found.")
 
         # Export button
-        from ofac.core.risk import RiskLevel, classify_risk_level
-from ofac.core.models import MatchType
-from ofac.streamlit.components.export import render_export_button
-
         st.divider()
         render_export_button()
 
 
 __all__ = ["render_results"]
-
