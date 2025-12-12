@@ -73,8 +73,11 @@ def main() -> None:
 
         render_screening()
     elif workflow_step == "review":
-        st.info("🚧 Results display component coming in Story 2.9...")
+        from ofac.streamlit.components.results import render_results
+
+        render_results()
 
 
 if __name__ == "__main__":
     main()
+
