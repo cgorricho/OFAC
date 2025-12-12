@@ -122,6 +122,7 @@ development_status:
   6-3-analyst-notes-field: in-progress
   6-3-analyst-notes-field: done
   6-4-single-entity-re-screening: in-progress
-  6-4-single-entity-re-screening: backlog
-  6-5-decision-traceability: backlog
+  6-4-single-entity-re-screening: done
+  6-5-decision-traceability: done
+  epic-6: done
   epic-6-retrospective: optional
