@@ -12,8 +12,6 @@ Usage:
 import pandas as pd
 import streamlit as st
 
-from ofac.core.models import MatchStatus
-
 
 def _get_status_badge(status: str) -> str:
     """Get HTML badge for status.
@@ -38,7 +36,10 @@ def render_results() -> None:
     st.markdown("### 📊 Screening Results")
 
     # Check if results exist
-    if "screening_results" not in st.session_state or st.session_state["screening_results"] is None:
+    if (
+        "screening_results" not in st.session_state
+        or st.session_state["screening_results"] is None
+    ):
         st.error("No screening results available. Please run screening first.")
         if st.button("Back to Screening"):
             from ofac.streamlit.state import set_workflow_step
@@ -49,17 +50,10 @@ def render_results() -> None:
 
     results_data = st.session_state["screening_results"]
 
-    # Summary stats
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.metric("Total Screened", results_data.get("total_screened", 0))
-    with col2:
-        st.metric("✅ OK", results_data.get("ok_count", 0))
-    with col3:
-        st.metric("⚠️ REVIEW", results_data.get("review_count", 0))
-    with col4:
-        st.metric("❌ NOK", results_data.get("nok_count", 0))
+    # Import and render summary
+    from ofac.streamlit.components.summary import render_summary
 
+    render_summary()
     st.divider()
 
     # Filter by status
@@ -113,13 +107,17 @@ def render_results() -> None:
     if len(df) > 0:
         st.markdown("#### Match Details")
         for _idx, row in df.iterrows():
-            with st.expander(f"{row['Entity Name']} - {row['Status']} (Score: {row['Score']})"):
+            with st.expander(
+                f"{row['Entity Name']} - {row['Status']} (Score: {row['Score']})"
+            ):
                 if row["Match Details"]:
                     for match in row["Match Details"]:
                         st.write(f"**SDN Name:** {match.get('sdn_name', 'N/A')}")
                         st.write(f"**Match Type:** {match.get('match_type', 'N/A')}")
                         st.write(f"**Score:** {match.get('match_score', 0)}")
-                        st.write(f"**Programs:** {', '.join(match.get('programs', []))}")
+                        st.write(
+                            f"**Programs:** {', '.join(match.get('programs', []))}"
+                        )
                         if match.get("country"):
                             st.write(f"**Country:** {match.get('country')}")
                         st.divider()
@@ -128,4 +126,3 @@ def render_results() -> None:
 
 
 __all__ = ["render_results"]
-
