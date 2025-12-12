@@ -63,7 +63,7 @@ development_status:
   2-1-fastapi-application-setup: done
   2-2-single-entity-screening-endpoint: done
   2-3-batch-screening-endpoint: done
-  2-4-file-parsing-column-detection: backlog
+  2-4-file-parsing-column-detection: done
   2-5-streamlit-app-shell: backlog
   2-6-file-upload-component: backlog
   2-7-column-mapping-component: backlog

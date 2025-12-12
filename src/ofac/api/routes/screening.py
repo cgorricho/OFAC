@@ -1,6 +1,5 @@
 """Screening endpoints for single and batch entity screening."""
 
-import io
 import time
 from datetime import UTC, datetime
 from uuid import uuid4
@@ -10,12 +9,21 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 
 from ofac.api.deps import get_matcher
 from ofac.api.schemas import SingleScreeningRequest, SingleScreeningResponse
-from ofac.core.models import BatchScreeningResponse
 from ofac.core.classifier import classify_screening_result
-from ofac.core.config import settings
-from ofac.core.exceptions import FileFormatError, FileParseError, FileTooLargeError
+from ofac.core.exceptions import (
+    ColumnMappingError,
+    FileFormatError,
+    FileParseError,
+    FileTooLargeError,
+)
+from ofac.core.file_parser import detect_columns, parse_file
 from ofac.core.matcher import EntityMatcher
-from ofac.core.models import EntityInput, MatchStatus, ScreeningResult
+from ofac.core.models import (
+    BatchScreeningResponse,
+    EntityInput,
+    MatchStatus,
+    ScreeningResult,
+)
 
 router = APIRouter(prefix="/screenings", tags=["Screening"])
 
@@ -88,95 +96,6 @@ async def screen_single_entity(
         ) from e
 
 
-def _parse_uploaded_file(file: UploadFile) -> pd.DataFrame:
-    """Parse uploaded Excel or CSV file.
-
-    Args:
-        file: Uploaded file from FastAPI.
-
-    Returns:
-        DataFrame with parsed file contents.
-
-    Raises:
-        FileFormatError: If file format is not supported.
-        FileParseError: If file cannot be parsed.
-        FileTooLargeError: If file exceeds max size.
-    """
-    # Check file size
-    file_content = file.file.read()
-    file_size_mb = len(file_content) / (1024 * 1024)
-    max_size_mb = 10  # 10MB limit
-
-    if file_size_mb > max_size_mb:
-        raise FileTooLargeError(
-            f"File size ({file_size_mb:.2f}MB) exceeds maximum ({max_size_mb}MB)",
-            details={"file_size_mb": file_size_mb, "max_size_mb": max_size_mb},
-        )
-
-    # Reset file pointer
-    file.file.seek(0)
-
-    # Determine file type
-    filename = file.filename or ""
-    file_ext = filename.split(".")[-1].lower() if "." in filename else ""
-
-    try:
-        if file_ext in ["xlsx", "xls"]:
-            df = pd.read_excel(io.BytesIO(file_content), engine="openpyxl")
-        elif file_ext == "csv":
-            df = pd.read_csv(io.BytesIO(file_content), encoding="utf-8")
-        else:
-            raise FileFormatError(
-                f"Unsupported file format: {file_ext}. Supported: xlsx, xls, csv",
-                details={"filename": filename, "extension": file_ext},
-            )
-
-        # Check row count
-        if len(df) > settings.max_file_rows:
-            raise FileTooLargeError(
-                f"File has {len(df)} rows, exceeds maximum {settings.max_file_rows}",
-                details={"row_count": len(df), "max_rows": settings.max_file_rows},
-            )
-
-        return df
-
-    except FileFormatError:
-        raise
-    except FileTooLargeError:
-        raise
-    except Exception as e:
-        raise FileParseError(
-            f"Failed to parse file: {str(e)}",
-            details={"filename": filename, "error": str(e)},
-        ) from e
-
-
-def _detect_name_column(df: pd.DataFrame) -> str | None:
-    """Auto-detect entity name column.
-
-    Args:
-        df: DataFrame to search.
-
-    Returns:
-        Column name if found, None otherwise.
-    """
-    name_patterns = [
-        "name",
-        "organization",
-        "entity",
-        "partner",
-        "beneficiary",
-        "org",
-        "company",
-    ]
-
-    for col in df.columns:
-        col_lower = str(col).lower()
-        for pattern in name_patterns:
-            if pattern in col_lower:
-                return col
-
-    return None
 
 
 @router.post("/batch", response_model=BatchScreeningResponse)
@@ -200,21 +119,15 @@ async def screen_batch(
     screening_id = str(uuid4())
 
     try:
-        # Parse file
-        df = _parse_uploaded_file(file)
+        # Read file content
+        file_content = await file.read()
+        filename = file.filename or "uploaded_file"
 
-        # Auto-detect name column
-        name_column = _detect_name_column(df)
-        if not name_column:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail={
-                    "code": "FILE_COLUMN_MAPPING_ERROR",
-                    "message": "Could not auto-detect entity name column. Available columns: "
-                    + ", ".join(df.columns.tolist()),
-                    "available_columns": df.columns.tolist(),
-                },
-            )
+        # Parse file
+        df = parse_file(file_content, filename)
+
+        # Detect columns
+        column_mapping = detect_columns(df)
 
         # Process each row
         results: list[ScreeningResult] = []
@@ -223,29 +136,22 @@ async def screen_batch(
         nok_count = 0
 
         for _, row in df.iterrows():
-            entity_name = str(row[name_column]).strip()
+            entity_name = str(row[column_mapping.entity_name_column]).strip()
             if not entity_name or entity_name == "nan":
                 continue
 
             # Extract optional fields
             country = None
+            if column_mapping.country_column:
+                country_val = row.get(column_mapping.country_column)
+                if pd.notna(country_val):
+                    country = str(country_val).strip()
+
             description = None
-
-            # Try to find country column
-            country_patterns = ["country", "nation", "location"]
-            for col in df.columns:
-                if any(pattern in str(col).lower() for pattern in country_patterns):
-                    country_val = row.get(col)
-                    if pd.notna(country_val):
-                        country = str(country_val).strip()
-
-            # Try to find description column
-            desc_patterns = ["description", "project", "notes", "remarks"]
-            for col in df.columns:
-                if any(pattern in str(col).lower() for pattern in desc_patterns):
-                    desc_val = row.get(col)
-                    if pd.notna(desc_val):
-                        description = str(desc_val).strip()
+            if column_mapping.description_column:
+                desc_val = row.get(column_mapping.description_column)
+                if pd.notna(desc_val):
+                    description = str(desc_val).strip()
 
             # Create entity input
             entity_input = EntityInput(
@@ -302,6 +208,15 @@ async def screen_batch(
 
     except HTTPException:
         raise
+    except ColumnMappingError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "code": e.code,
+                "message": str(e),
+                "details": e.details,
+            },
+        ) from e
     except FileFormatError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
