@@ -17,10 +17,7 @@ def render_summary() -> None:
     st.markdown("### 📈 Summary Dashboard")
 
     # Check if results exist
-    if (
-        "screening_results" not in st.session_state
-        or st.session_state["screening_results"] is None
-    ):
+    if "screening_results" not in st.session_state or st.session_state["screening_results"] is None:
         st.info("No screening results available. Run screening to see summary.")
         return
 
@@ -67,11 +64,10 @@ def render_summary() -> None:
         st.write(f"**OFAC Version:** {st.session_state.get('ofac_version', 'unknown')}")
     with col2:
         processing_time = results_data.get("processing_time_ms", 0)
-        st.write(
-            f"**Processing Time:** {processing_time}ms ({processing_time / 1000:.2f}s)"
-        )
+        st.write(f"**Processing Time:** {processing_time}ms ({processing_time/1000:.2f}s)")
         ofac_version = results_data.get("ofac_version", "unknown")
         st.write(f"**OFAC Data Version:** {ofac_version}")
 
 
 __all__ = ["render_summary"]
+

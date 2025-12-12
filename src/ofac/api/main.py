@@ -13,8 +13,8 @@ Usage:
     # Run with: uvicorn ofac.api.main:app --reload
 """
 
-from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from typing import AsyncGenerator
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -104,3 +104,4 @@ def get_ofac_loader() -> OFACDataLoader | None:
 
 
 __all__ = ["create_app", "app", "get_ofac_loader"]
+

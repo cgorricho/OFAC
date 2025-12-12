@@ -28,7 +28,7 @@ def inject_custom_css() -> None:
             font-weight: 500;
             font-size: 0.875rem;
         }
-
+        
         .status-review {
             background-color: #fff3cd;
             color: #856404;
@@ -37,7 +37,7 @@ def inject_custom_css() -> None:
             font-weight: 500;
             font-size: 0.875rem;
         }
-
+        
         .status-nok {
             background-color: #f8d7da;
             color: #721c24;
@@ -46,14 +46,14 @@ def inject_custom_css() -> None:
             font-weight: 500;
             font-size: 0.875rem;
         }
-
+        
         /* Professional header styling */
         .main-header {
             border-bottom: 2px solid #4A90A4;
             padding-bottom: 1rem;
             margin-bottom: 2rem;
         }
-
+        
         /* OFAC version badge */
         .ofac-version {
             font-size: 0.75rem;
@@ -66,3 +66,4 @@ def inject_custom_css() -> None:
 
 
 __all__ = ["inject_custom_css"]
+

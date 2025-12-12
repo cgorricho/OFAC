@@ -18,12 +18,7 @@ from ofac.core.exceptions import (
 )
 from ofac.core.file_parser import detect_columns, parse_file
 from ofac.core.matcher import EntityMatcher
-from ofac.core.models import (
-    BatchScreeningResponse,
-    EntityInput,
-    MatchStatus,
-    ScreeningResult,
-)
+from ofac.core.models import BatchScreeningResponse, EntityInput, MatchStatus, ScreeningResult
 
 router = APIRouter(prefix="/screenings", tags=["Screening"])
 

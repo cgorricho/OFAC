@@ -6,4 +6,3 @@ This module contains:
 - styles: Custom CSS injection
 - components/: Reusable UI components
 """
-

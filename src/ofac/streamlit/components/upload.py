@@ -10,6 +10,7 @@ Usage:
         # File uploaded, proceed to next step
 """
 
+import pandas as pd
 import streamlit as st
 
 from ofac.core.exceptions import FileFormatError, FileParseError, FileTooLargeError
@@ -71,12 +72,8 @@ def render_file_upload() -> bool:
             # Auto-set column mapping
             st.session_state["column_mapping"] = {
                 "name": suggestions["name_candidates"][0],
-                "country": suggestions["country_candidates"][0]
-                if suggestions["country_candidates"]
-                else None,
-                "description": suggestions["description_candidates"][0]
-                if suggestions["description_candidates"]
-                else None,
+                "country": suggestions["country_candidates"][0] if suggestions["country_candidates"] else None,
+                "description": suggestions["description_candidates"][0] if suggestions["description_candidates"] else None,
             }
 
             # Move to mapping step
@@ -119,3 +116,4 @@ def render_file_upload() -> bool:
 
 
 __all__ = ["render_file_upload"]
+

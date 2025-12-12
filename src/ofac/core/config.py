@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     - OFAC_LOG_LEVEL=DEBUG
     - OFAC_DATA_PATH=./custom/path
     """
-
+    
     # Matching thresholds
     match_threshold_nok: int = Field(
         default=95,
@@ -44,7 +44,7 @@ class Settings(BaseSettings):
         le=100,
         description="Score >= this value results in REVIEW (needs human review)",
     )
-
+    
     # OFAC data settings
     ofac_data_path: Path = Field(
         default=Path("./data/ofac"),
@@ -59,7 +59,7 @@ class Settings(BaseSettings):
         ge=1,
         description="Hours between automatic update checks",
     )
-
+    
     # Performance settings
     batch_size: int = Field(
         default=100,
@@ -73,7 +73,7 @@ class Settings(BaseSettings):
         le=100000,
         description="Maximum rows allowed in uploaded file",
     )
-
+    
     # Logging settings
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = Field(
         default="INFO",
@@ -83,7 +83,7 @@ class Settings(BaseSettings):
         default=Path("./data/logs"),
         description="Path to log directory",
     )
-
+    
     # API settings
     api_host: str = Field(
         default="127.0.0.1",
@@ -99,7 +99,7 @@ class Settings(BaseSettings):
         default_factory=lambda: ["http://localhost:8501", "http://127.0.0.1:8501"],
         description="Allowed CORS origins for API",
     )
-
+    
     # Streamlit settings
     streamlit_port: int = Field(
         default=8501,
@@ -107,7 +107,7 @@ class Settings(BaseSettings):
         le=65535,
         description="Streamlit server port",
     )
-
+    
     model_config = SettingsConfigDict(
         env_prefix="OFAC_",
         env_file=".env",
@@ -115,7 +115,7 @@ class Settings(BaseSettings):
         case_sensitive=False,
         extra="ignore",
     )
-
+    
     @field_validator("ofac_data_path", "log_path", mode="before")
     @classmethod
     def convert_to_path(cls, v: str | Path) -> Path:
@@ -141,3 +141,4 @@ settings = Settings()
 
 
 __all__ = ["Settings", "settings"]
+

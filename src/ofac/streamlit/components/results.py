@@ -36,10 +36,7 @@ def render_results() -> None:
     st.markdown("### 📊 Screening Results")
 
     # Check if results exist
-    if (
-        "screening_results" not in st.session_state
-        or st.session_state["screening_results"] is None
-    ):
+    if "screening_results" not in st.session_state or st.session_state["screening_results"] is None:
         st.error("No screening results available. Please run screening first.")
         if st.button("Back to Screening"):
             from ofac.streamlit.state import set_workflow_step
@@ -107,17 +104,13 @@ def render_results() -> None:
     if len(df) > 0:
         st.markdown("#### Match Details")
         for _idx, row in df.iterrows():
-            with st.expander(
-                f"{row['Entity Name']} - {row['Status']} (Score: {row['Score']})"
-            ):
+            with st.expander(f"{row['Entity Name']} - {row['Status']} (Score: {row['Score']})"):
                 if row["Match Details"]:
                     for match in row["Match Details"]:
                         st.write(f"**SDN Name:** {match.get('sdn_name', 'N/A')}")
                         st.write(f"**Match Type:** {match.get('match_type', 'N/A')}")
                         st.write(f"**Score:** {match.get('match_score', 0)}")
-                        st.write(
-                            f"**Programs:** {', '.join(match.get('programs', []))}"
-                        )
+                        st.write(f"**Programs:** {', '.join(match.get('programs', []))}")
                         if match.get("country"):
                             st.write(f"**Country:** {match.get('country')}")
                         st.divider()
@@ -126,3 +119,4 @@ def render_results() -> None:
 
 
 __all__ = ["render_results"]
+

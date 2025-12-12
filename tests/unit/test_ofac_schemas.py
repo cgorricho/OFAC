@@ -342,3 +342,4 @@ class TestRealWorldExamples:
         assert addr.ent_num == 306
         assert addr.country == "Switzerland"
         assert addr.add_remarks is None
+

@@ -34,4 +34,3 @@ def test_ofac_streamlit_module_imports() -> None:
     from ofac import streamlit  # noqa: F401
 
     assert True
-

@@ -306,3 +306,4 @@ class TestExceptionUsagePatterns:
         assert response["code"] == "FILE_INVALID_FORMAT"
         assert "PDF" in response["message"]
         assert response["details"]["filename"] == "test.pdf"
+

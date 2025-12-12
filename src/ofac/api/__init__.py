@@ -6,4 +6,3 @@ This module contains:
 - schemas: API request/response Pydantic models
 - routes/: Endpoint handlers
 """
-

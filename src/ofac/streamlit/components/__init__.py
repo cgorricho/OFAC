@@ -11,3 +11,4 @@ Components:
 from ofac.streamlit.components import mapping, results, screening, summary, upload
 
 __all__ = ["upload", "mapping", "screening", "results", "summary"]
+

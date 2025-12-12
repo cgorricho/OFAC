@@ -59,3 +59,4 @@ def test_app_metadata() -> None:
     assert app.version == "0.1.0"
     assert app.docs_url == "/docs"
     assert app.redoc_url == "/redoc"
+

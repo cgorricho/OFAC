@@ -70,9 +70,7 @@ class OFACError(Exception):
 
     def __repr__(self) -> str:
         """Return detailed string representation."""
-        return (
-            f"{self.__class__.__name__}(code={self.code!r}, message={self.message!r})"
-        )
+        return f"{self.__class__.__name__}(code={self.code!r}, message={self.message!r})"
 
 
 # =============================================================================
@@ -229,3 +227,4 @@ __all__ = [
     "ConfigurationError",
     "InvalidThresholdError",
 ]
+

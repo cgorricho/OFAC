@@ -12,6 +12,7 @@ Usage:
 import io
 import time
 
+import pandas as pd
 import requests
 import streamlit as st
 
@@ -28,19 +29,14 @@ def render_screening() -> bool:
     st.markdown("### 🔍 Screening Execution")
 
     # Check prerequisites
-    if (
-        "file_dataframe" not in st.session_state
-        or st.session_state["file_dataframe"] is None
-    ):
+    if "file_dataframe" not in st.session_state or st.session_state["file_dataframe"] is None:
         st.error("No file uploaded. Please go back to the upload step.")
         if st.button("Back to Upload"):
             set_workflow_step("upload")
             st.rerun()
         return False
 
-    if "column_mapping" not in st.session_state or not st.session_state[
-        "column_mapping"
-    ].get("name"):
+    if "column_mapping" not in st.session_state or not st.session_state["column_mapping"].get("name"):
         st.error("Column mapping not configured. Please go back to the mapping step.")
         if st.button("Back to Mapping"):
             set_workflow_step("map")
@@ -48,10 +44,7 @@ def render_screening() -> bool:
         return False
 
     # Prepare file for API
-    if (
-        "uploaded_file" not in st.session_state
-        or st.session_state["uploaded_file"] is None
-    ):
+    if "uploaded_file" not in st.session_state or st.session_state["uploaded_file"] is None:
         st.error("Uploaded file not found. Please go back to the upload step.")
         return False
 
@@ -86,13 +79,7 @@ def render_screening() -> bool:
 
             # Call batch screening API
             api_url = f"http://{settings.api_host}:{settings.api_port}/screenings/batch"
-            files = {
-                "file": (
-                    uploaded_file.name,
-                    io.BytesIO(file_content),
-                    uploaded_file.type,
-                )
-            }
+            files = {"file": (uploaded_file.name, io.BytesIO(file_content), uploaded_file.type)}
 
             status_text.text("Processing entities...")
             progress_bar.progress(50)
@@ -111,11 +98,7 @@ def render_screening() -> bool:
 
                 # Store results
                 st.session_state["screening_results"] = result_data
-                st.session_state["screening_id"] = (
-                    result_data.get("results", [{}])[0].get("screening_id")
-                    if result_data.get("results")
-                    else None
-                )
+                st.session_state["screening_id"] = result_data.get("results", [{}])[0].get("screening_id") if result_data.get("results") else None
 
                 st.success(f"✅ Screening completed in {processing_time:.2f} seconds!")
                 st.info(
@@ -132,9 +115,7 @@ def render_screening() -> bool:
 
             else:
                 error_data = response.json() if response.content else {}
-                error_message = error_data.get("detail", {}).get(
-                    "message", "Unknown error"
-                )
+                error_message = error_data.get("detail", {}).get("message", "Unknown error")
                 st.error(f"❌ Screening failed: {error_message}")
                 progress_bar.empty()
                 status_text.empty()
@@ -175,3 +156,4 @@ def render_screening() -> bool:
 
 
 __all__ = ["render_screening"]
+

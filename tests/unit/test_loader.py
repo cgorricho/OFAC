@@ -233,3 +233,4 @@ class TestLoaderImports:
 
         assert OFACDataLoader is not None
         assert OFACData is not None
+

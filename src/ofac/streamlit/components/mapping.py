@@ -26,10 +26,7 @@ def render_column_mapping() -> bool:
     st.markdown("### 📋 Column Mapping")
 
     # Check if file is uploaded
-    if (
-        "file_dataframe" not in st.session_state
-        or st.session_state["file_dataframe"] is None
-    ):
+    if "file_dataframe" not in st.session_state or st.session_state["file_dataframe"] is None:
         st.error("No file uploaded. Please go back to the upload step.")
         if st.button("Back to Upload"):
             set_workflow_step("upload")
@@ -45,9 +42,7 @@ def render_column_mapping() -> bool:
         st.success("✅ Columns auto-detected successfully!")
     except ColumnMappingError:
         column_mapping = None
-        st.warning(
-            "⚠️ Could not auto-detect all required columns. Please select manually."
-        )
+        st.warning("⚠️ Could not auto-detect all required columns. Please select manually.")
 
     # Entity name column (required)
     st.markdown("#### Entity Name Column (Required)")
@@ -74,9 +69,7 @@ def render_column_mapping() -> bool:
     if column_mapping and column_mapping.country_column:
         default_country = column_mapping.country_column
         default_country_idx = (
-            country_options.index(default_country)
-            if default_country in country_options
-            else 0
+            country_options.index(default_country) if default_country in country_options else 0
         )
     else:
         default_country_idx = 0
@@ -94,9 +87,7 @@ def render_column_mapping() -> bool:
     if column_mapping and column_mapping.description_column:
         default_desc = column_mapping.description_column
         default_desc_idx = (
-            country_options.index(default_desc)
-            if default_desc in country_options
-            else 0
+            country_options.index(default_desc) if default_desc in country_options else 0
         )
     else:
         default_desc_idx = 0
@@ -135,12 +126,11 @@ def render_column_mapping() -> bool:
     # Show preview of selected columns
     if name_column:
         st.markdown("#### Mapping Preview")
-        preview_df = df[
-            [name_column] + ([c for c in [country_column, description_column] if c])
-        ].head(5)
+        preview_df = df[[name_column] + ([c for c in [country_column, description_column] if c])].head(5)
         st.dataframe(preview_df, use_container_width=True)
 
     return False
 
 
 __all__ = ["render_column_mapping"]
+

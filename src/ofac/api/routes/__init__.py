@@ -9,3 +9,4 @@ Routes:
 from ofac.api.routes import health, screening
 
 __all__ = ["health", "screening"]
+

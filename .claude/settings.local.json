@@ -14,7 +14,13 @@
       "Bash(wc:*)",
       "Bash(git -C /home/cgorricho/apps/OFAC log --oneline -20)",
       "Bash(git -C /home/cgorricho/apps/OFAC log:*)",
-      "Bash(file:*)"
+      "Bash(file:*)",
+      "Bash(grep:*)",
+      "Bash(python -m pytest:*)",
+      "Bash(python -m ruff check:*)",
+      "Bash([ -d .venv ])",
+      "Bash(source:*)",
+      "Bash(python -m mypy:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
