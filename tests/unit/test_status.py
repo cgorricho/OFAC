@@ -21,9 +21,10 @@ class TestCalculateFreshness:
 
     def test_current_status_less_than_7_days(self) -> None:
         """Data less than 7 days old returns CURRENT."""
+        loaded_at_str = (datetime.now(UTC) - timedelta(days=5)).isoformat()
         version = OFACDataVersion(
-            loaded_at=datetime.now(UTC) - timedelta(days=5),
-            record_count=1000,
+            loaded_at=loaded_at_str,
+            sdn_count=1000,
         )
         status, age_days = calculate_freshness(version)
         assert status == FreshnessStatus.CURRENT
@@ -31,9 +32,10 @@ class TestCalculateFreshness:
 
     def test_current_status_exactly_6_days(self) -> None:
         """Data exactly 6 days old returns CURRENT."""
+        loaded_at_str = (datetime.now(UTC) - timedelta(days=6)).isoformat()
         version = OFACDataVersion(
-            loaded_at=datetime.now(UTC) - timedelta(days=6),
-            record_count=1000,
+            loaded_at=loaded_at_str,
+            sdn_count=1000,
         )
         status, age_days = calculate_freshness(version)
         assert status == FreshnessStatus.CURRENT
@@ -41,9 +43,10 @@ class TestCalculateFreshness:
 
     def test_stale_status_7_days(self) -> None:
         """Data exactly 7 days old returns STALE."""
+        loaded_at_str = (datetime.now(UTC) - timedelta(days=7)).isoformat()
         version = OFACDataVersion(
-            loaded_at=datetime.now(UTC) - timedelta(days=7),
-            record_count=1000,
+            loaded_at=loaded_at_str,
+            sdn_count=1000,
         )
         status, age_days = calculate_freshness(version)
         assert status == FreshnessStatus.STALE
@@ -51,9 +54,10 @@ class TestCalculateFreshness:
 
     def test_stale_status_10_days(self) -> None:
         """Data 10 days old returns STALE."""
+        loaded_at_str = (datetime.now(UTC) - timedelta(days=10)).isoformat()
         version = OFACDataVersion(
-            loaded_at=datetime.now(UTC) - timedelta(days=10),
-            record_count=1000,
+            loaded_at=loaded_at_str,
+            sdn_count=1000,
         )
         status, age_days = calculate_freshness(version)
         assert status == FreshnessStatus.STALE
@@ -61,9 +65,10 @@ class TestCalculateFreshness:
 
     def test_stale_status_14_days(self) -> None:
         """Data exactly 14 days old returns STALE."""
+        loaded_at_str = (datetime.now(UTC) - timedelta(days=14)).isoformat()
         version = OFACDataVersion(
-            loaded_at=datetime.now(UTC) - timedelta(days=14),
-            record_count=1000,
+            loaded_at=loaded_at_str,
+            sdn_count=1000,
         )
         status, age_days = calculate_freshness(version)
         assert status == FreshnessStatus.STALE
@@ -71,9 +76,10 @@ class TestCalculateFreshness:
 
     def test_critical_status_15_days(self) -> None:
         """Data exactly 15 days old returns CRITICAL."""
+        loaded_at_str = (datetime.now(UTC) - timedelta(days=15)).isoformat()
         version = OFACDataVersion(
-            loaded_at=datetime.now(UTC) - timedelta(days=15),
-            record_count=1000,
+            loaded_at=loaded_at_str,
+            sdn_count=1000,
         )
         status, age_days = calculate_freshness(version)
         assert status == FreshnessStatus.CRITICAL
@@ -81,9 +87,10 @@ class TestCalculateFreshness:
 
     def test_critical_status_30_days(self) -> None:
         """Data 30 days old returns CRITICAL."""
+        loaded_at_str = (datetime.now(UTC) - timedelta(days=30)).isoformat()
         version = OFACDataVersion(
-            loaded_at=datetime.now(UTC) - timedelta(days=30),
-            record_count=1000,
+            loaded_at=loaded_at_str,
+            sdn_count=1000,
         )
         status, age_days = calculate_freshness(version)
         assert status == FreshnessStatus.CRITICAL
@@ -93,7 +100,7 @@ class TestCalculateFreshness:
         """Data with no timestamp returns CRITICAL with age 999."""
         version = OFACDataVersion(
             loaded_at=None,
-            record_count=1000,
+            sdn_count=1000,
         )
         status, age_days = calculate_freshness(version)
         assert status == FreshnessStatus.CRITICAL
@@ -101,9 +108,10 @@ class TestCalculateFreshness:
 
     def test_zero_days_returns_current(self) -> None:
         """Data loaded today returns CURRENT with age 0."""
+        loaded_at_str = datetime.now(UTC).isoformat()
         version = OFACDataVersion(
-            loaded_at=datetime.now(UTC),
-            record_count=1000,
+            loaded_at=loaded_at_str,
+            sdn_count=1000,
         )
         status, age_days = calculate_freshness(version)
         assert status == FreshnessStatus.CURRENT

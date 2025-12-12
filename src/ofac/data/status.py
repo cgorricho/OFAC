@@ -36,7 +36,7 @@ def calculate_freshness(version: OFACDataVersion) -> tuple[FreshnessStatus, int]
     """Calculate freshness status and age in days for OFAC data.
 
     Args:
-        version: OFACDataVersion containing loaded_at timestamp.
+        version: OFACDataVersion containing loaded_at timestamp (as ISO string).
 
     Returns:
         Tuple of (FreshnessStatus, age_days).
@@ -52,9 +52,18 @@ def calculate_freshness(version: OFACDataVersion) -> tuple[FreshnessStatus, int]
         # If no timestamp, assume data is very old (critical)
         return FreshnessStatus.CRITICAL, 999
 
+    try:
+        # Parse ISO format timestamp string
+        loaded_at = datetime.fromisoformat(version.loaded_at.replace("Z", "+00:00"))
+        if loaded_at.tzinfo is None:
+            loaded_at = loaded_at.replace(tzinfo=UTC)
+    except (ValueError, AttributeError):
+        # If parsing fails, assume data is very old
+        return FreshnessStatus.CRITICAL, 999
+
     # Calculate age in days
     now = datetime.now(UTC)
-    age_delta = now - version.loaded_at
+    age_delta = now - loaded_at
     age_days = age_delta.days
 
     # Determine status based on thresholds

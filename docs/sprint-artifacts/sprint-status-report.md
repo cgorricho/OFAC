@@ -3,7 +3,8 @@
 **Report Date:** 2025-12-12  
 **Project:** OFAC Screening Tool  
 **Sprint:** Implementation Phase  
-**Status:** ✅ On Track - Excellent Progress
+**Status:** ✅ On Track - Excellent Progress  
+**Last Updated:** After Story 5.1
 
 ---
 
@@ -17,7 +18,7 @@ The OFAC Sanctions Screening Tool project is progressing excellently with **4 of
 - ✅ **Epic 3 Complete:** Classification & Humanitarian Intelligence (6 stories)
 - ✅ **Epic 4 Complete:** Audit-Ready Reporting (7 stories)
 - 🎯 **Next:** Epic 5 - OFAC Data Freshness & Updates
-- 📊 **Overall Progress:** 31/41 stories (75.6%)
+- 📊 **Overall Progress:** 32/41 stories (78.0%)
 - ✅ **All Tests Passing:** 304/304 (100%)
 
 ---
@@ -30,9 +31,9 @@ The OFAC Sanctions Screening Tool project is progressing excellently with **4 of
 | **Epic 2: Batch Screening Workflow** | ✅ Done | 10/10 | 100% | 21 FRs | 2025-12-12 |
 | **Epic 3: Classification & Humanitarian Intelligence** | ✅ Done | 6/6 | 100% | 7 FRs | 2025-12-12 |
 | **Epic 4: Audit-Ready Reporting** | ✅ Done | 7/7 | 100% | 16 FRs | 2025-12-12 |
-| **Epic 5: OFAC Data Freshness & Updates** | ⬜ Backlog | 0/5 | 0% | 5 FRs | - |
+| **Epic 5: OFAC Data Freshness & Updates** | 🟡 In Progress | 1/5 | 20% | 5 FRs | - |
 | **Epic 6: Exception Review Workflow** | ⬜ Backlog | 0/5 | 0% | 5 FRs | - |
-| **TOTAL** | **4/6 Done** | **31/41** | **75.6%** | **56/79 FRs (70.9%)** | - |
+| **TOTAL** | **4/6 Done** | **32/41** | **78.0%** | **56/79 FRs (70.9%)** | - |
 
 ---
 
@@ -166,7 +167,7 @@ The OFAC Sanctions Screening Tool project is progressing excellently with **4 of
 
 | Story | Status | Description |
 |-------|--------|-------------|
-| 5.1 Freshness Status Calculation | ⬜ Backlog | Age calculation logic |
+| 5.1 Freshness Status Calculation | ✅ Done | Age calculation logic, FreshnessStatus enum |
 | 5.2 OFAC Status API Endpoint | ⬜ Backlog | GET /data/status |
 | 5.3 Freshness Display in UI | ⬜ Backlog | Version display with warnings |
 | 5.4 Manual Update Trigger | ⬜ Backlog | UI update button |
