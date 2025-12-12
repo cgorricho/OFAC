@@ -45,11 +45,11 @@ def render_freshness_indicator() -> None:
                 st.markdown(
                     f"""
                     <div style="padding: 0.5rem; background-color: #f0f2f6; border-radius: 0.25rem; margin-bottom: 1rem;">
-                        <strong>OFAC Data:</strong> 
+                        <strong>OFAC Data:</strong>
                         <span style="color: {badge_color}; font-weight: bold;">{color} {freshness_status}</span>
                         ({age_days} days old)
                         <span style="font-size: 0.85em; color: #666; margin-left: 0.5rem;">
-                            Last updated: {last_updated.split('T')[0] if 'T' in str(last_updated) else last_updated}
+                            Last updated: {last_updated.split("T")[0] if "T" in str(last_updated) else last_updated}
                         </span>
                     </div>
                     """,
@@ -68,4 +68,3 @@ def render_freshness_indicator() -> None:
 
 
 __all__ = ["render_freshness_indicator"]
-

@@ -62,9 +62,7 @@ async def get_data_status(
 
 
 @router.post("/refresh")
-async def refresh_data(
-    matcher: EntityMatcher = Depends(get_matcher),
-) -> dict:
+async def refresh_data() -> dict:
     """Trigger OFAC data update.
 
     Downloads and updates OFAC data from official sources.
@@ -97,7 +95,7 @@ async def refresh_data(
         data_path = loader.data_path
         updater = OFACUpdater(data_path=data_path)
         try:
-            download_info = updater.download_sdn_files()
+            updater.download_sdn_files()
             # Reload data after successful update
             loader.clear_cache()
             loader.load()
@@ -108,7 +106,9 @@ async def refresh_data(
             freshness_status, age_days = calculate_freshness(version_info)
 
             return {
-                "version": version_info.publish_date or version_info.loaded_at or "Unknown",
+                "version": version_info.publish_date
+                or version_info.loaded_at
+                or "Unknown",
                 "last_updated": version_info.loaded_at,
                 "age_days": age_days,
                 "freshness_status": freshness_status.value,
@@ -137,4 +137,3 @@ async def refresh_data(
 
 
 __all__ = ["router"]
-
