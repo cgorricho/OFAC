@@ -152,7 +152,7 @@ class ReportGenerator:
         """
         sheet = self.workbook.create_sheet("All Results")
 
-        # Header row
+        # Header row (with audit trail fields)
         headers = [
             "Row #",
             "Organization Name",
@@ -162,6 +162,12 @@ class ReportGenerator:
             "Matched SDN",
             "Match Type",
             "Country Alignment",
+            "Screening ID",
+            "Timestamp",
+            "OFAC Version",
+            "SDN Entity ID",
+            "Programs",
+            "General License",
         ]
         sheet.append(headers)
 
@@ -241,7 +247,7 @@ class ReportGenerator:
             )
         )
 
-        # Header row (same as details sheet)
+        # Header row (same as details sheet with audit trail)
         headers = [
             "Row #",
             "Organization Name",
@@ -251,6 +257,12 @@ class ReportGenerator:
             "Matched SDN",
             "Match Type",
             "Country Alignment",
+            "Screening ID",
+            "Timestamp",
+            "OFAC Version",
+            "SDN Entity ID",
+            "Programs",
+            "General License",
         ]
         sheet.append(headers)
 
@@ -292,6 +304,16 @@ class ReportGenerator:
                 sheet.column_dimensions[col_letter].width = 12
             elif col_idx == 8:  # Country Alignment
                 sheet.column_dimensions[col_letter].width = 18
+            elif col_idx == 9:  # Screening ID
+                sheet.column_dimensions[col_letter].width = 36
+            elif col_idx == 10:  # Timestamp
+                sheet.column_dimensions[col_letter].width = 20
+            elif col_idx == 11 or col_idx == 12:  # OFAC Version
+                sheet.column_dimensions[col_letter].width = 15
+            elif col_idx == 13:  # Programs
+                sheet.column_dimensions[col_letter].width = 20
+            elif col_idx == 14:  # General License
+                sheet.column_dimensions[col_letter].width = 25
 
         # Apply color coding to exceptions sheet
         if exceptions:  # Only if there are exceptions

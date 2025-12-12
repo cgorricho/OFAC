@@ -146,12 +146,18 @@ class TestReportGenerator:
         workbook = load_workbook(io.BytesIO(workbook_bytes))
         sheet = workbook["All Results"]
 
-        # Check headers
+        # Check headers (including audit trail fields)
         headers = [cell.value for cell in sheet[1]]
         assert "Row #" in headers
         assert "Organization Name" in headers
         assert "Status" in headers
         assert "Match Score" in headers
+        assert "Screening ID" in headers
+        assert "Timestamp" in headers
+        assert "OFAC Version" in headers
+        assert "SDN Entity ID" in headers
+        assert "Programs" in headers
+        assert "General License" in headers
 
     def test_details_sheet_contains_data(self, sample_batch_response) -> None:
         """Details sheet contains screening result data."""
