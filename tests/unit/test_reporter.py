@@ -5,7 +5,15 @@ import io
 import pytest
 from openpyxl import load_workbook
 
-from ofac.core.models import BatchScreeningResponse, EntityInput, MatchStatus, ScreeningResult
+from ofac.core.models import (
+    BatchScreeningResponse,
+    EntityInput,
+    MatchResult,
+    MatchStatus,
+    MatchType,
+    OFACList,
+    ScreeningResult,
+)
 from ofac.core.reporter import ReportGenerator
 
 
@@ -18,12 +26,26 @@ def sample_batch_response() -> BatchScreeningResponse:
             match_status=MatchStatus.OK,
             highest_score=0,
             ofac_version="2025-12-01",
+            matches=[],
         ),
         ScreeningResult(
             entity_input=EntityInput(entity_name="Test Org 2", country="SY"),
             match_status=MatchStatus.REVIEW,
             highest_score=85,
             ofac_version="2025-12-01",
+            matches=[
+                MatchResult(
+                    sdn_name="TEST ENTITY",
+                    sdn_type="entity",
+                    match_score=85,
+                    match_type=MatchType.FUZZY,
+                    ofac_list=OFACList.SDN,
+                    programs=[],
+                    ent_num=1,
+                    country="Syria",
+                    country_match=True,
+                )
+            ],
         ),
     ]
     return BatchScreeningResponse(
@@ -66,7 +88,9 @@ class TestReportGenerator:
             nok_count=0,
         )
 
-        with pytest.raises(ValueError, match="Cannot generate report from empty results"):
+        with pytest.raises(
+            ValueError, match="Cannot generate report from empty results"
+        ):
             generator.generate(empty_response)
 
     def test_generate_workbook_structure(self, sample_batch_response) -> None:
@@ -108,3 +132,40 @@ class TestReportGenerator:
         assert "REVIEW" in cell_values
         assert "NOK" in cell_values or 0 in cell_values  # NOK count might be 0
 
+    def test_details_sheet_exists(self, sample_batch_response) -> None:
+        """Details sheet is created in workbook."""
+        generator = ReportGenerator()
+        workbook_bytes = generator.generate(sample_batch_response)
+
+        workbook = load_workbook(io.BytesIO(workbook_bytes))
+        assert "All Results" in workbook.sheetnames
+
+    def test_details_sheet_contains_headers(self, sample_batch_response) -> None:
+        """Details sheet contains expected column headers."""
+        generator = ReportGenerator()
+        workbook_bytes = generator.generate(sample_batch_response)
+
+        workbook = load_workbook(io.BytesIO(workbook_bytes))
+        sheet = workbook["All Results"]
+
+        # Check headers
+        headers = [cell.value for cell in sheet[1]]
+        assert "Row #" in headers
+        assert "Organization Name" in headers
+        assert "Status" in headers
+        assert "Match Score" in headers
+
+    def test_details_sheet_contains_data(self, sample_batch_response) -> None:
+        """Details sheet contains screening result data."""
+        generator = ReportGenerator()
+        workbook_bytes = generator.generate(sample_batch_response)
+
+        workbook = load_workbook(io.BytesIO(workbook_bytes))
+        sheet = workbook["All Results"]
+
+        # Should have header row + 2 data rows
+        assert sheet.max_row == 3
+        # Check that data rows contain organization names
+        cell_values = [cell.value for row in sheet.iter_rows(min_row=2) for cell in row]
+        assert "Test Org 1" in cell_values
+        assert "Test Org 2" in cell_values
