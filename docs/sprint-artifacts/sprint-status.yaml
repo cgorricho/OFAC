@@ -54,7 +54,7 @@ development_status:
   1-7-ofac-data-downloader: done
   1-8-basic-matching-engine: done
         epic-1: done
-  epic-1-retrospective: optional
+  epic-1-retrospective: completed
 
   # ========================================
   # Epic 2: Batch Screening Workflow
