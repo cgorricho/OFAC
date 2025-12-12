@@ -31,12 +31,33 @@ def _get_status_badge(status: str) -> str:
     return badge_map.get(status_lower, status)
 
 
+def _get_country_alignment_display(
+    entity_country: str | None, ofac_country: str | None, country_match: bool
+) -> str:
+    """Get country alignment display string.
+
+    Args:
+        entity_country: Entity's country (from input).
+        ofac_country: OFAC entry's country.
+        country_match: Whether countries match (from matcher).
+
+    Returns:
+        Display string: "Match", "Mismatch", or "N/A".
+    """
+    if not entity_country or not ofac_country:
+        return "N/A"
+    return "Match" if country_match else "Mismatch"
+
+
 def render_results() -> None:
     """Render results display component."""
     st.markdown("### 📊 Screening Results")
 
     # Check if results exist
-    if "screening_results" not in st.session_state or st.session_state["screening_results"] is None:
+    if (
+        "screening_results" not in st.session_state
+        or st.session_state["screening_results"] is None
+    ):
         st.error("No screening results available. Please run screening first.")
         if st.button("Back to Screening"):
             from ofac.streamlit.state import set_workflow_step
@@ -104,19 +125,32 @@ def render_results() -> None:
     if len(df) > 0:
         st.markdown("#### Match Details")
         for _idx, row in df.iterrows():
-            with st.expander(f"{row['Entity Name']} - {row['Status']} (Score: {row['Score']})"):
+            entity_country = row.get("Country", "")
+            with st.expander(
+                f"{row['Entity Name']} - {row['Status']} (Score: {row['Score']})"
+            ):
                 if row["Match Details"]:
                     for match in row["Match Details"]:
                         st.write(f"**SDN Name:** {match.get('sdn_name', 'N/A')}")
                         st.write(f"**Match Type:** {match.get('match_type', 'N/A')}")
                         st.write(f"**Score:** {match.get('match_score', 0)}")
-                        st.write(f"**Programs:** {', '.join(match.get('programs', []))}")
-                        if match.get("country"):
-                            st.write(f"**Country:** {match.get('country')}")
+                        st.write(
+                            f"**Programs:** {', '.join(match.get('programs', []))}"
+                        )
+
+                        # Country alignment display
+                        ofac_country = match.get("country")
+                        country_match = match.get("country_match", False)
+                        alignment = _get_country_alignment_display(
+                            entity_country, ofac_country, country_match
+                        )
+
+                        st.write(f"**Input Country:** {entity_country or 'N/A'}")
+                        st.write(f"**OFAC Entry Country:** {ofac_country or 'N/A'}")
+                        st.write(f"**Country Alignment:** {alignment}")
                         st.divider()
                 else:
                     st.info("No matches found.")
 
 
 __all__ = ["render_results"]
-
