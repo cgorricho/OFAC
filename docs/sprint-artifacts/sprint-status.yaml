@@ -53,13 +53,12 @@ development_status:
   1-6-ofac-data-loader: done
   1-7-ofac-data-downloader: done
   1-8-basic-matching-engine: done
-        epic-1: done
   epic-1-retrospective: completed
 
   # ========================================
   # Epic 2: Batch Screening Workflow
   # ========================================
-  epic-2: in-progress
+  epic-2: done
   2-1-fastapi-application-setup: done
   2-2-single-entity-screening-endpoint: done
   2-3-batch-screening-endpoint: done
@@ -70,27 +69,24 @@ development_status:
   2-8-screening-execution-with-progress: done
   2-9-results-display-component: done
   2-10-summary-dashboard: done
-   epic-2: done
-  epic-2-retrospective: optional
+  epic-2-retrospective: completed
 
   # ========================================
   # Epic 3: Classification & Humanitarian Intelligence
   # ========================================
-  epic-3: backlog
+  epic-3: done
   3-1-ok-review-nok-classification-logic: done
-   epic-3: in-progress
   3-2-sanctioned-countries-registry: done
   3-3-country-aware-score-boosting: done
   3-4-humanitarian-keyword-detection: done
   3-5-general-license-flagging: done
   3-6-country-alignment-display: done
-  epic-3: done
   epic-3-retrospective: completed
 
   # ========================================
   # Epic 4: Audit-Ready Reporting
   # ========================================
-  epic-4: in-progress
+  epic-4: done
   4-1-report-generator-service: done
   4-2-summary-sheet: done
   4-3-detailed-results-sheet: done
@@ -98,21 +94,14 @@ development_status:
   4-5-color-coding-formatting: done
   4-6-audit-trail-fields: done
   4-7-one-click-download: done
-  epic-4: done
-  epic-4-retrospective: optional
-  4-2-summary-sheet: backlog
-  4-3-detailed-results-sheet: backlog
-  4-4-exceptions-sheet: backlog
-  4-5-color-coding-formatting: backlog
-  4-6-audit-trail-fields: backlog
-  4-7-one-click-download: backlog
-  epic-4-retrospective: optional
+  epic-4-retrospective: completed
 
   # ========================================
   # Epic 5: OFAC Data Freshness & Updates
   # ========================================
-  epic-5: backlog
-  5-1-freshness-status-calculation: backlog
+  epic-5: in-progress
+  5-1-freshness-status-calculation: done
+  5-2-ofac-status-api-endpoint: in-progress
   5-2-ofac-status-api-endpoint: backlog
   5-3-freshness-display-in-ui: backlog
   5-4-manual-update-trigger: backlog
@@ -129,4 +118,3 @@ development_status:
   6-4-single-entity-re-screening: backlog
   6-5-decision-traceability: backlog
   epic-6-retrospective: optional
-
