@@ -82,10 +82,11 @@ def create_app() -> FastAPI:
     )
 
     # Register routers
-    from ofac.api.routes import health, screening
+    from ofac.api.routes import data, health, screening
 
     app.include_router(health.router, tags=["Health"])
     app.include_router(screening.router, tags=["Screening"])
+    app.include_router(data.router, tags=["Data"])
 
     return app
 

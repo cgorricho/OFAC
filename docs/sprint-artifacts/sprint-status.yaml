@@ -102,7 +102,8 @@ development_status:
   epic-5: in-progress
   5-1-freshness-status-calculation: done
   5-2-ofac-status-api-endpoint: in-progress
-  5-2-ofac-status-api-endpoint: backlog
+  5-2-ofac-status-api-endpoint: done
+  5-3-freshness-display-in-ui: in-progress
   5-3-freshness-display-in-ui: backlog
   5-4-manual-update-trigger: backlog
   5-5-update-trigger-api: backlog
