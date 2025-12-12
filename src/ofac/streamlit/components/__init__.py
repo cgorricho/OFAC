@@ -8,3 +8,7 @@ Components:
 - export: Download buttons, report generation
 """
 
+from ofac.streamlit.components import upload
+
+__all__ = ["upload"]
+

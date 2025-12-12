@@ -65,7 +65,7 @@ development_status:
   2-3-batch-screening-endpoint: done
   2-4-file-parsing-column-detection: done
   2-5-streamlit-app-shell: done
-  2-6-file-upload-component: backlog
+  2-6-file-upload-component: done
   2-7-column-mapping-component: backlog
   2-8-screening-execution-with-progress: backlog
   2-9-results-display-component: backlog

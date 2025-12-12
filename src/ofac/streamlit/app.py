@@ -54,15 +54,22 @@ def main() -> None:
     )
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # Main content area
-    st.markdown("### Welcome")
-    st.markdown(
-        "Upload an Excel or CSV file with organization names to screen them against "
-        "OFAC sanctions lists."
-    )
+    # Get current workflow step
+    from ofac.streamlit.state import get_workflow_step
 
-    # Placeholder for future components
-    st.info("🚧 Application components coming in next stories...")
+    workflow_step = get_workflow_step()
+
+    # Route to appropriate component based on workflow step
+    if workflow_step == "upload":
+        from ofac.streamlit.components.upload import render_file_upload
+
+        render_file_upload()
+    elif workflow_step == "map":
+        st.info("🚧 Column mapping component coming in Story 2.7...")
+    elif workflow_step == "screen":
+        st.info("🚧 Screening execution component coming in Story 2.8...")
+    elif workflow_step == "review":
+        st.info("🚧 Results display component coming in Story 2.9...")
 
 
 if __name__ == "__main__":
