@@ -152,5 +152,11 @@ def render_results() -> None:
                 else:
                     st.info("No matches found.")
 
+        # Export button
+        from ofac.streamlit.components.export import render_export_button
+
+        st.divider()
+        render_export_button()
+
 
 __all__ = ["render_results"]
