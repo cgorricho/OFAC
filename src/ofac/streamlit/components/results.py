@@ -132,10 +132,11 @@ def render_results() -> None:
                 if row["Match Details"]:
                     for match in row["Match Details"]:
                         st.write(f"**SDN Name:** {match.get('sdn_name', 'N/A')}")
+                        st.write(f"**SDN Type:** {match.get('sdn_type', 'N/A')}")
                         st.write(f"**Match Type:** {match.get('match_type', 'N/A')}")
-                        st.write(f"**Score:** {match.get('match_score', 0)}")
+                        st.write(f"**Match Score:** {match.get('match_score', 0)}%")
                         st.write(
-                            f"**Programs:** {', '.join(match.get('programs', []))}"
+                            f"**Match Algorithm:** {match.get('match_type', 'N/A')}"
                         )
 
                         # Country alignment display
@@ -148,6 +149,22 @@ def render_results() -> None:
                         st.write(f"**Input Country:** {entity_country or 'N/A'}")
                         st.write(f"**OFAC Entry Country:** {ofac_country or 'N/A'}")
                         st.write(f"**Country Alignment:** {alignment}")
+
+                        # OFAC entity ID and programs
+                        ent_num = match.get("ent_num")
+                        if ent_num:
+                            st.write(f"**OFAC Entity ID:** {ent_num}")
+                        programs = match.get("programs", [])
+                        if programs:
+                            st.write(f"**Programs:** {', '.join(programs)}")
+                        else:
+                            st.write("**Programs:** N/A")
+
+                        # General License notes
+                        gl_note = row.get("General License", "N/A")
+                        if gl_note and gl_note != "N/A":
+                            st.write(f"**General License Notes:** {gl_note}")
+
                         st.divider()
                 else:
                     st.info("No matches found.")

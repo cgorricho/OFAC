@@ -115,8 +115,9 @@ development_status:
   # ========================================
   # Epic 6: Exception Review Workflow
   # ========================================
-  epic-6: backlog
-  6-1-match-details-expansion: backlog
+  epic-6: in-progress
+  6-1-match-details-expansion: done
+  6-2-risk-level-classification: in-progress
   6-2-risk-level-classification: backlog
   6-3-analyst-notes-field: backlog
   6-4-single-entity-re-screening: backlog
