@@ -123,7 +123,9 @@ class TestMatchMethod:
         )
         if fuzzy_match:
             assert fuzzy_match.sdn_name == "BANCO NACIONAL DE CUBA"
-            assert fuzzy_match.match_score >= 80  # High similarity with token_sort_ratio
+            assert (
+                fuzzy_match.match_score >= 80
+            )  # High similarity with token_sort_ratio
         else:
             # If no fuzzy match, at least verify we got matches
             assert matches[0].sdn_name == "BANCO NACIONAL DE CUBA"
@@ -215,7 +217,11 @@ class TestCountryAwareScoring:
 
         # Exact match + country boost should still be 100
         exact_match = next(
-            (m for m in matches if m.match_score == 100 and m.match_type == MatchType.EXACT),
+            (
+                m
+                for m in matches
+                if m.match_score == 100 and m.match_type == MatchType.EXACT
+            ),
             None,
         )
         if exact_match:
@@ -240,9 +246,7 @@ class TestCountryAwareScoring:
         matches = matcher.match("AL-QAIDA", country="Japan")
 
         # Should not have country boost for AL-QAIDA (entity 1000 has no country in mock data)
-        match = next(
-            (m for m in matches if "AL-QAIDA" in m.sdn_name), None
-        )
+        match = next((m for m in matches if "AL-QAIDA" in m.sdn_name), None)
         if match:
             assert match.country_match is False
 
@@ -271,9 +275,7 @@ class TestMatchResultStructure:
         matcher = EntityMatcher(mock_ofac_data)
         matches = matcher.match("ISLAMIC REVOLUTIONARY GUARD")
 
-        irgc_match = next(
-            (m for m in matches if "IRGC" in m.sdn_name), None
-        )
+        irgc_match = next((m for m in matches if "IRGC" in m.sdn_name), None)
         if irgc_match:
             assert "IRAN" in irgc_match.programs or "IRGC" in irgc_match.programs
 
@@ -307,4 +309,3 @@ class TestMatcherImports:
         from ofac.core.matcher import EntityMatcher
 
         assert EntityMatcher is not None
-

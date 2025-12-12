@@ -44,6 +44,12 @@ class Settings(BaseSettings):
         le=100,
         description="Score >= this value results in REVIEW (needs human review)",
     )
+    country_match_boost: int = Field(
+        default=10,
+        ge=0,
+        le=50,
+        description="Score boost when entity country matches OFAC entry country",
+    )
     
     # OFAC data settings
     ofac_data_path: Path = Field(

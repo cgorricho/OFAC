@@ -21,6 +21,7 @@ from typing import TYPE_CHECKING
 from rapidfuzz import fuzz
 
 from ofac.core.config import settings
+from ofac.core.countries import is_sanctioned_country
 from ofac.core.exceptions import OFACNotLoadedError
 from ofac.core.models import MatchResult, MatchType, OFACList
 
@@ -102,17 +103,14 @@ class EntityMatcher:
             # Check for exact match
             match_type = MatchType.EXACT if score == 100 else MatchType.FUZZY
 
-            # Apply country boost if provided
+            # Apply country boost if provided and countries match
             country_match = False
             if country:
                 ent_num = int(row.get("ent_num", 0))
-                countries = self.data.addresses_by_ent.get(ent_num, [])
-                country_lower = country.lower().strip()
-                for ofac_country in countries:
-                    if country_lower in ofac_country.lower() or ofac_country.lower() in country_lower:
-                        country_match = True
-                        score = min(100, score + 10)  # Boost by 10 points
-                        break
+                ofac_countries = self.data.addresses_by_ent.get(ent_num, [])
+                country_match = self._check_country_match(country, ofac_countries)
+                if country_match:
+                    score = min(100, score + settings.country_match_boost)
 
             # Only include matches above minimum threshold
             if score >= self.min_score:
@@ -141,16 +139,17 @@ class EntityMatcher:
             for alias_name in aliases:
                 alias_score = fuzz.token_sort_ratio(entity_name_clean, alias_name)
 
-                # Apply country boost if provided
+                # Apply country boost if provided and countries match
                 alias_country_match = False
                 if country:
-                    countries = self.data.addresses_by_ent.get(ent_num, [])
-                    country_lower = country.lower().strip()
-                    for ofac_country in countries:
-                        if country_lower in ofac_country.lower() or ofac_country.lower() in country_lower:
-                            alias_country_match = True
-                            alias_score = min(100, alias_score + 10)
-                            break
+                    ofac_countries = self.data.addresses_by_ent.get(ent_num, [])
+                    alias_country_match = self._check_country_match(
+                        country, ofac_countries
+                    )
+                    if alias_country_match:
+                        alias_score = min(
+                            100, alias_score + settings.country_match_boost
+                        )
 
                 if alias_score >= self.min_score:
                     ent_num = int(row.get("ent_num", 0))
@@ -175,6 +174,58 @@ class EntityMatcher:
         # Sort by score descending and return top N
         matches.sort(key=lambda x: x[0], reverse=True)
         return [match for _, match in matches[:max_results]]
+
+    def _check_country_match(
+        self, entity_country: str, ofac_countries: list[str]
+    ) -> bool:
+        """Check if entity country matches any OFAC entry country.
+
+        Performs case-insensitive matching and handles country name variations.
+        Also checks if country codes match (e.g., "SY" matches "Syria").
+
+        Args:
+            entity_country: Entity's country (name or ISO code).
+            ofac_countries: List of countries from OFAC address data.
+
+        Returns:
+            True if countries match, False otherwise.
+        """
+        if not entity_country or not ofac_countries:
+            return False
+
+        entity_country_lower = entity_country.lower().strip()
+
+        # Check for direct match or substring match
+        for ofac_country in ofac_countries:
+            if not ofac_country:
+                continue
+            ofac_country_lower = ofac_country.lower().strip()
+
+            # Direct match
+            if entity_country_lower == ofac_country_lower:
+                return True
+
+            # Substring match (e.g., "Syria" in "Syrian Arab Republic")
+            if (
+                entity_country_lower in ofac_country_lower
+                or ofac_country_lower in entity_country_lower
+            ):
+                return True
+
+            # Check if both are sanctioned countries (country code matching)
+            if is_sanctioned_country(entity_country) and is_sanctioned_country(
+                ofac_country
+            ):
+                # If both are sanctioned, consider it a match if they're the same country
+                # This handles cases where country names vary but codes match
+                entity_code = (
+                    entity_country.upper()[:2] if len(entity_country) >= 2 else None
+                )
+                ofac_code = ofac_country.upper()[:2] if len(ofac_country) >= 2 else None
+                if entity_code and ofac_code and entity_code == ofac_code:
+                    return True
+
+        return False
 
     def _parse_programs(self, programs: str | None) -> list[str]:
         """Parse programs string into list.
@@ -211,4 +262,3 @@ class EntityMatcher:
 
 
 __all__ = ["EntityMatcher"]
-
