@@ -128,11 +128,18 @@ def render_results() -> None:
     # Expandable match details
     if len(df) > 0:
         st.markdown("#### Match Details")
-        for _idx, row in df.iterrows():
+        for idx, row in df.iterrows():
             entity_country = row.get("Country", "")
-            with st.expander(
-                f"{row['Entity Name']} - {row['Status']} (Score: {row['Score']})"
-            ):
+            entity_name = row["Entity Name"]
+            status = row["Status"]
+            score = row["Score"]
+            result_key = f"analyst_notes_{idx}"
+
+            # Initialize notes in session state if not present
+            if result_key not in st.session_state:
+                st.session_state[result_key] = ""
+
+            with st.expander(f"{entity_name} - {status} (Score: {score})"):
                 if row["Match Details"]:
                     for match in row["Match Details"]:
                         # Calculate risk level
@@ -196,6 +203,18 @@ def render_results() -> None:
                         st.divider()
                 else:
                     st.info("No matches found.")
+
+                # Analyst notes field
+                st.markdown("---")
+                st.markdown("**Analyst Notes:**")
+                notes = st.text_area(
+                    "Add notes for this review",
+                    value=st.session_state[result_key],
+                    key=f"notes_input_{idx}",
+                    height=100,
+                    help="Add notes about your review decision, context, or follow-up actions.",
+                )
+                st.session_state[result_key] = notes
 
         # Export button
         st.divider()
