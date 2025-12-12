@@ -6,3 +6,6 @@ Routes:
 - health: GET /health
 """
 
+from ofac.api.routes import health
+
+__all__ = ["health"]

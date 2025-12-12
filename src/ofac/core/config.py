@@ -95,6 +95,10 @@ class Settings(BaseSettings):
         le=65535,
         description="API server port",
     )
+    cors_origins: list[str] = Field(
+        default_factory=lambda: ["http://localhost:8501", "http://127.0.0.1:8501"],
+        description="Allowed CORS origins for API",
+    )
 
     # Streamlit settings
     streamlit_port: int = Field(

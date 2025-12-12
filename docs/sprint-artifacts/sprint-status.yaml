@@ -59,8 +59,8 @@ development_status:
   # ========================================
   # Epic 2: Batch Screening Workflow
   # ========================================
-  epic-2: backlog
-  2-1-fastapi-application-setup: backlog
+  epic-2: in-progress
+  2-1-fastapi-application-setup: done
   2-2-single-entity-screening-endpoint: backlog
   2-3-batch-screening-endpoint: backlog
   2-4-file-parsing-column-detection: backlog
