@@ -10,6 +10,13 @@ This module contains:
 """
 
 from ofac.core.classifier import ScreeningClassifier, classify_screening_result
+from ofac.core.countries import (
+    GeneralLicense,
+    get_all_sanctioned_countries,
+    get_countries_with_gl,
+    get_general_license,
+    is_sanctioned_country,
+)
 from ofac.core.config import Settings, settings
 from ofac.core.exceptions import (
     BatchTooLargeError,
@@ -51,6 +58,12 @@ __all__ = [
     # Classifier
     "ScreeningClassifier",
     "classify_screening_result",
+    # Countries
+    "is_sanctioned_country",
+    "get_general_license",
+    "get_all_sanctioned_countries",
+    "get_countries_with_gl",
+    "GeneralLicense",
     # Matcher
     "EntityMatcher",
     # Models
