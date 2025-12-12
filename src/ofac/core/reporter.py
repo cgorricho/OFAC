@@ -15,9 +15,15 @@ import io
 from typing import TYPE_CHECKING
 
 from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill
 from openpyxl.utils import get_column_letter
 
 from ofac.core.models import MatchStatus
+
+# Color coding per UX spec
+COLOR_OK = "C6F6D5"  # Light green
+COLOR_REVIEW = "FEFCBF"  # Light yellow
+COLOR_NOK = "FED7D7"  # Light red
 
 if TYPE_CHECKING:
     from ofac.core.models import BatchScreeningResponse
@@ -95,14 +101,20 @@ class ReportGenerator:
         if batch_response.results:
             first_result = batch_response.results[0]
             sheet.append(["Screening ID", first_result.screening_id])
-            sheet.append(["Screening Date", first_result.timestamp.strftime("%Y-%m-%d")])
-            sheet.append(["Screening Time", first_result.timestamp.strftime("%H:%M:%S UTC")])
+            sheet.append(
+                ["Screening Date", first_result.timestamp.strftime("%Y-%m-%d")]
+            )
+            sheet.append(
+                ["Screening Time", first_result.timestamp.strftime("%H:%M:%S UTC")]
+            )
             sheet.append(["OFAC Data Version", first_result.ofac_version or "Unknown"])
         else:
             sheet.append(["Screening ID", "N/A"])
             sheet.append(["Screening Date", "N/A"])
             sheet.append(["Screening Time", "N/A"])
-            sheet.append(["OFAC Data Version", batch_response.ofac_version or "Unknown"])
+            sheet.append(
+                ["OFAC Data Version", batch_response.ofac_version or "Unknown"]
+            )
 
         sheet.append([])  # Empty row
 
@@ -166,7 +178,11 @@ class ReportGenerator:
                 result.highest_score,
                 highest_match.sdn_name if highest_match else "N/A",
                 highest_match.match_type.value if highest_match else "N/A",
-                "Match" if highest_match and highest_match.country_match else "N/A" if not highest_match else "Mismatch",
+                "Match"
+                if highest_match and highest_match.country_match
+                else "N/A"
+                if not highest_match
+                else "Mismatch",
             ]
             sheet.append(row)
 
@@ -174,8 +190,11 @@ class ReportGenerator:
         # Note: openpyxl doesn't support sorting directly, so we'll sort the data before adding
         # For now, we'll add sorting in a future enhancement if needed
 
+        # Apply color coding to status column
+        self._apply_color_coding(sheet, status_col_idx=4, start_row=2)
+
         # Auto-adjust column widths
-        for col_idx, header in enumerate(headers, start=1):
+        for col_idx, _header in enumerate(headers, start=1):
             col_letter = get_column_letter(col_idx)
             if col_idx == 1:  # Row #
                 sheet.column_dimensions[col_letter].width = 8
@@ -192,7 +211,9 @@ class ReportGenerator:
             elif col_idx == 8:  # Country Alignment
                 sheet.column_dimensions[col_letter].width = 18
 
-    def _create_exceptions_sheet(self, batch_response: "BatchScreeningResponse") -> None:
+    def _create_exceptions_sheet(
+        self, batch_response: "BatchScreeningResponse"
+    ) -> None:
         """Create Exceptions sheet with only REVIEW and NOK cases.
 
         Args:
@@ -202,7 +223,8 @@ class ReportGenerator:
 
         # Filter to only REVIEW and NOK
         exceptions = [
-            r for r in batch_response.results
+            r
+            for r in batch_response.results
             if r.match_status in (MatchStatus.REVIEW, MatchStatus.NOK)
         ]
 
@@ -245,7 +267,11 @@ class ReportGenerator:
                 result.highest_score,
                 highest_match.sdn_name if highest_match else "N/A",
                 highest_match.match_type.value if highest_match else "N/A",
-                "Match" if highest_match and highest_match.country_match else "N/A" if not highest_match else "Mismatch",
+                "Match"
+                if highest_match and highest_match.country_match
+                else "N/A"
+                if not highest_match
+                else "Mismatch",
             ]
             sheet.append(row)
 
@@ -267,6 +293,43 @@ class ReportGenerator:
             elif col_idx == 8:  # Country Alignment
                 sheet.column_dimensions[col_letter].width = 18
 
+        # Apply color coding to exceptions sheet
+        if exceptions:  # Only if there are exceptions
+            self._apply_color_coding(sheet, status_col_idx=4, start_row=2)
+
+    def _apply_color_coding(
+        self, sheet, status_col_idx: int, start_row: int = 2
+    ) -> None:
+        """Apply color coding to status cells based on match status.
+
+        Args:
+            sheet: The worksheet to apply formatting to.
+            status_col_idx: Column index (1-based) containing status values.
+            start_row: Row number to start applying formatting (default: 2, after header).
+        """
+        status_col_letter = get_column_letter(status_col_idx)
+
+        for row_idx in range(start_row, sheet.max_row + 1):
+            status_cell = sheet[f"{status_col_letter}{row_idx}"]
+            status_value = status_cell.value
+
+            if status_value == "OK":
+                fill = PatternFill(
+                    start_color=COLOR_OK, end_color=COLOR_OK, fill_type="solid"
+                )
+                status_cell.fill = fill
+            elif status_value == "REVIEW":
+                fill = PatternFill(
+                    start_color=COLOR_REVIEW, end_color=COLOR_REVIEW, fill_type="solid"
+                )
+                status_cell.fill = fill
+            elif status_value == "NOK":
+                fill = PatternFill(
+                    start_color=COLOR_NOK, end_color=COLOR_NOK, fill_type="solid"
+                )
+                status_cell.fill = fill
+                # Also bold NOK text for accessibility
+                status_cell.font = Font(bold=True)
+
 
 __all__ = ["ReportGenerator"]
-

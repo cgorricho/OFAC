@@ -88,9 +88,7 @@ class TestReportGenerator:
             nok_count=0,
         )
 
-        with pytest.raises(
-            ValueError, match="Cannot generate report from empty results"
-        ):
+        with pytest.raises(ValueError, match="Cannot generate report from empty results"):
             generator.generate(empty_response)
 
     def test_generate_workbook_structure(self, sample_batch_response) -> None:
@@ -323,3 +321,76 @@ class TestReportGenerator:
         data_rows = list(sheet.iter_rows(min_row=2, values_only=True))
         assert data_rows[0][3] == "NOK"  # Status column
         assert data_rows[0][1] == "NOK High"  # Organization name
+
+    def test_color_coding_applied(self) -> None:
+        """Color coding is applied to status cells."""
+        results = [
+            ScreeningResult(
+                entity_input=EntityInput(entity_name="OK Org", country="US"),
+                match_status=MatchStatus.OK,
+                highest_score=0,
+                ofac_version="2025-12-01",
+                matches=[],
+            ),
+            ScreeningResult(
+                entity_input=EntityInput(entity_name="REVIEW Org", country="SY"),
+                match_status=MatchStatus.REVIEW,
+                highest_score=85,
+                ofac_version="2025-12-01",
+                matches=[
+                    MatchResult(
+                        sdn_name="ENTITY",
+                        sdn_type="entity",
+                        match_score=85,
+                        match_type=MatchType.FUZZY,
+                        ofac_list=OFACList.SDN,
+                        programs=[],
+                        ent_num=1,
+                        country="Syria",
+                    )
+                ],
+            ),
+            ScreeningResult(
+                entity_input=EntityInput(entity_name="NOK Org", country="IR"),
+                match_status=MatchStatus.NOK,
+                highest_score=95,
+                ofac_version="2025-12-01",
+                matches=[
+                    MatchResult(
+                        sdn_name="NOK ENTITY",
+                        sdn_type="entity",
+                        match_score=95,
+                        match_type=MatchType.EXACT,
+                        ofac_list=OFACList.SDN,
+                        programs=["IRAN"],
+                        ent_num=2,
+                        country="Iran",
+                    )
+                ],
+            ),
+        ]
+        batch_response = BatchScreeningResponse(
+            results=results,
+            total_screened=3,
+            ok_count=1,
+            review_count=1,
+            nok_count=1,
+        )
+
+        generator = ReportGenerator()
+        workbook_bytes = generator.generate(batch_response)
+
+        workbook = load_workbook(io.BytesIO(workbook_bytes))
+        sheet = workbook["All Results"]
+
+        # Check color coding (status column is D, row 2 is first data row)
+        ok_cell = sheet["D2"]  # OK status
+        review_cell = sheet["D3"]  # REVIEW status
+        nok_cell = sheet["D4"]  # NOK status
+
+        # openpyxl uses "00" prefix for RGB (not "FF")
+        assert ok_cell.fill.start_color.rgb == "00C6F6D5"  # Light green
+        assert review_cell.fill.start_color.rgb == "00FEFCBF"  # Light yellow
+        assert nok_cell.fill.start_color.rgb == "00FED7D7"  # Light red
+        assert nok_cell.font.bold is True  # NOK is bolded
+
