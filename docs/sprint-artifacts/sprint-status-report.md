@@ -18,7 +18,7 @@ The OFAC Sanctions Screening Tool project is progressing excellently with **4 of
 - ✅ **Epic 3 Complete:** Classification & Humanitarian Intelligence (6 stories)
 - ✅ **Epic 4 Complete:** Audit-Ready Reporting (7 stories)
 - 🎯 **Next:** Epic 5 - OFAC Data Freshness & Updates
-- 📊 **Overall Progress:** 36/41 stories (87.8%)
+- 📊 **Overall Progress:** 37/41 stories (90.2%)
 - ✅ **All Tests Passing:** 304/304 (100%)
 
 ---
@@ -32,8 +32,8 @@ The OFAC Sanctions Screening Tool project is progressing excellently with **4 of
 | **Epic 3: Classification & Humanitarian Intelligence** | ✅ Done | 6/6 | 100% | 7 FRs | 2025-12-12 |
 | **Epic 4: Audit-Ready Reporting** | ✅ Done | 7/7 | 100% | 16 FRs | 2025-12-12 |
 | **Epic 5: OFAC Data Freshness & Updates** | ✅ Done | 5/5 | 100% | 5 FRs | 2025-12-12 |
-| **Epic 6: Exception Review Workflow** | ⬜ Backlog | 0/5 | 0% | 5 FRs | - |
-| **TOTAL** | **5/6 Done** | **36/41** | **87.8%** | **61/79 FRs (77.2%)** | - |
+| **Epic 6: Exception Review Workflow** | 🟡 In Progress | 1/5 | 20% | 5 FRs | - |
+| **TOTAL** | **5/6 Done** | **37/41** | **90.2%** | **61/79 FRs (77.2%)** | - |
 
 ---
 
@@ -187,7 +187,7 @@ The OFAC Sanctions Screening Tool project is progressing excellently with **4 of
 
 | Story | Status | Description |
 |-------|--------|-------------|
-| 6.1 Match Details Expansion | ⬜ Backlog | Expandable match details |
+| 6.1 Match Details Expansion | ✅ Done | Enhanced expandable match details |
 | 6.2 Risk Level Classification | ⬜ Backlog | High/Medium/Low risk |
 | 6.3 Analyst Notes Field | ⬜ Backlog | Notes for review decisions |
 | 6.4 Single Entity Re-Screening | ⬜ Backlog | Re-screen after changes |
