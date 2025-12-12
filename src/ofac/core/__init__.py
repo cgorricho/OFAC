@@ -9,7 +9,7 @@ This module contains:
 - reporter: Report generation
 """
 
-from ofac.core.classifier import classify_screening_result
+from ofac.core.classifier import ScreeningClassifier, classify_screening_result
 from ofac.core.config import Settings, settings
 from ofac.core.exceptions import (
     BatchTooLargeError,
@@ -49,6 +49,7 @@ __all__ = [
     "Settings",
     "settings",
     # Classifier
+    "ScreeningClassifier",
     "classify_screening_result",
     # Matcher
     "EntityMatcher",

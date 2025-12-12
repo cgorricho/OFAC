@@ -77,7 +77,8 @@ development_status:
   # Epic 3: Classification & Humanitarian Intelligence
   # ========================================
   epic-3: backlog
-  3-1-ok-review-nok-classification-logic: backlog
+  3-1-ok-review-nok-classification-logic: done
+   epic-3: in-progress
   3-2-sanctioned-countries-registry: backlog
   3-3-country-aware-score-boosting: backlog
   3-4-humanitarian-keyword-detection: backlog
