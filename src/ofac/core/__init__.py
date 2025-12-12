@@ -10,6 +10,7 @@ This module contains:
 """
 
 from ofac.core.classifier import ScreeningClassifier, classify_screening_result
+from ofac.core.config import Settings, settings
 from ofac.core.countries import (
     GeneralLicense,
     get_all_sanctioned_countries,
@@ -17,7 +18,6 @@ from ofac.core.countries import (
     get_general_license,
     is_sanctioned_country,
 )
-from ofac.core.config import Settings, settings
 from ofac.core.exceptions import (
     BatchTooLargeError,
     ColumnMappingError,
