@@ -65,7 +65,9 @@ def main() -> None:
 
         render_file_upload()
     elif workflow_step == "map":
-        st.info("🚧 Column mapping component coming in Story 2.7...")
+        from ofac.streamlit.components.mapping import render_column_mapping
+
+        render_column_mapping()
     elif workflow_step == "screen":
         st.info("🚧 Screening execution component coming in Story 2.8...")
     elif workflow_step == "review":
@@ -74,3 +76,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
