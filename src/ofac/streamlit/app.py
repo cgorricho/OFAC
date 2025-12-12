@@ -69,11 +69,12 @@ def main() -> None:
 
         render_column_mapping()
     elif workflow_step == "screen":
-        st.info("🚧 Screening execution component coming in Story 2.8...")
+        from ofac.streamlit.components.screening import render_screening
+
+        render_screening()
     elif workflow_step == "review":
         st.info("🚧 Results display component coming in Story 2.9...")
 
 
 if __name__ == "__main__":
     main()
-
