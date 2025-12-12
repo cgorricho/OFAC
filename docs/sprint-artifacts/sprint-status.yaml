@@ -61,7 +61,7 @@ development_status:
   # ========================================
   epic-2: in-progress
   2-1-fastapi-application-setup: done
-  2-2-single-entity-screening-endpoint: backlog
+  2-2-single-entity-screening-endpoint: done
   2-3-batch-screening-endpoint: backlog
   2-4-file-parsing-column-detection: backlog
   2-5-streamlit-app-shell: backlog
