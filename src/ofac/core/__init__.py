@@ -61,6 +61,8 @@ __all__ = [
     "classify_with_gl_context",
     "detect_humanitarian_keywords",
     "HUMANITARIAN_KEYWORDS",
+    # Reporter
+    "ReportGenerator",
     # Countries
     "is_sanctioned_country",
     "get_general_license",

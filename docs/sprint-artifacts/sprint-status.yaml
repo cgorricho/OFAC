@@ -90,8 +90,9 @@ development_status:
   # ========================================
   # Epic 4: Audit-Ready Reporting
   # ========================================
-  epic-4: backlog
-  4-1-report-generator-service: backlog
+  epic-4: in-progress
+  4-1-report-generator-service: done
+  4-2-summary-sheet: in-progress
   4-2-summary-sheet: backlog
   4-3-detailed-results-sheet: backlog
   4-4-exceptions-sheet: backlog
