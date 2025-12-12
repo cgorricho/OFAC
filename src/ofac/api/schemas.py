@@ -9,7 +9,7 @@ Usage:
 
 from pydantic import BaseModel, Field
 
-from ofac.core.models import EntityInput, ScreeningResult
+from ofac.core.models import BatchScreeningResponse, EntityInput, ScreeningResult
 
 
 class SingleScreeningRequest(BaseModel):
@@ -52,4 +52,9 @@ class SingleScreeningResponse(BaseModel):
     )
 
 
-__all__ = ["SingleScreeningRequest", "SingleScreeningResponse"]
+__all__ = [
+    "SingleScreeningRequest",
+    "SingleScreeningResponse",
+    "BatchScreeningResponse",
+]
+
