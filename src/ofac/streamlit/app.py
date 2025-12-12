@@ -54,6 +54,11 @@ def main() -> None:
     )
     st.markdown("</div>", unsafe_allow_html=True)
 
+    # Freshness indicator
+    from ofac.streamlit.components.freshness import render_freshness_indicator
+
+    render_freshness_indicator()
+
     # Get current workflow step
     from ofac.streamlit.state import get_workflow_step
 
@@ -80,4 +85,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
