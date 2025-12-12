@@ -106,8 +106,10 @@ development_status:
   5-3-freshness-display-in-ui: in-progress
   5-3-freshness-display-in-ui: done
   5-4-manual-update-trigger: in-progress
-  5-4-manual-update-trigger: backlog
-  5-5-update-trigger-api: backlog
+  5-4-manual-update-trigger: done
+  5-5-update-trigger-api: done
+  epic-5: done
+  epic-5-retrospective: optional
   epic-5-retrospective: optional
 
   # ========================================
