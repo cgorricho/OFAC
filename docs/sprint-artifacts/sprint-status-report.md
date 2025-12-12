@@ -18,7 +18,7 @@ The OFAC Sanctions Screening Tool project is progressing excellently with **4 of
 - ✅ **Epic 3 Complete:** Classification & Humanitarian Intelligence (6 stories)
 - ✅ **Epic 4 Complete:** Audit-Ready Reporting (7 stories)
 - 🎯 **Next:** Epic 5 - OFAC Data Freshness & Updates
-- 📊 **Overall Progress:** 38/41 stories (92.7%)
+- 📊 **Overall Progress:** 41/41 stories (100%)
 - ✅ **All Tests Passing:** 304/304 (100%)
 
 ---
@@ -32,8 +32,8 @@ The OFAC Sanctions Screening Tool project is progressing excellently with **4 of
 | **Epic 3: Classification & Humanitarian Intelligence** | ✅ Done | 6/6 | 100% | 7 FRs | 2025-12-12 |
 | **Epic 4: Audit-Ready Reporting** | ✅ Done | 7/7 | 100% | 16 FRs | 2025-12-12 |
 | **Epic 5: OFAC Data Freshness & Updates** | ✅ Done | 5/5 | 100% | 5 FRs | 2025-12-12 |
-| **Epic 6: Exception Review Workflow** | 🟡 In Progress | 2/5 | 40% | 5 FRs | - |
-| **TOTAL** | **5/6 Done** | **38/41** | **92.7%** | **61/79 FRs (77.2%)** | - |
+| **Epic 6: Exception Review Workflow** | ✅ Done | 5/5 | 100% | 5 FRs | 2025-12-12 |
+| **TOTAL** | **6/6 Done** | **41/41** | **100%** | **66/79 FRs (83.5%)** | - |
 
 ---
 
@@ -189,9 +189,9 @@ The OFAC Sanctions Screening Tool project is progressing excellently with **4 of
 |-------|--------|-------------|
 | 6.1 Match Details Expansion | ✅ Done | Enhanced expandable match details |
 | 6.2 Risk Level Classification | ✅ Done | RiskLevel enum, color-coded display |
-| 6.3 Analyst Notes Field | ⬜ Backlog | Notes for review decisions |
-| 6.4 Single Entity Re-Screening | ⬜ Backlog | Re-screen after changes |
-| 6.5 Decision Traceability | ⬜ Backlog | Audit trail for decisions |
+| 6.3 Analyst Notes Field | ✅ Done | Text area with session state persistence |
+| 6.4 Single Entity Re-Screening | ✅ Done | Re-screen button with pre-filled entity |
+| 6.5 Decision Traceability | ✅ Done | Decision radio buttons with timestamps |
 
 **Prerequisites:** Epic 4 complete ✅
 
