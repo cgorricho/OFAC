@@ -58,6 +58,7 @@ __all__ = [
     # Classifier
     "ScreeningClassifier",
     "classify_screening_result",
+    "classify_with_gl_context",
     "detect_humanitarian_keywords",
     "HUMANITARIAN_KEYWORDS",
     # Countries

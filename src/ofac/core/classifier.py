@@ -20,6 +20,7 @@ import re
 from typing import Literal
 
 from ofac.core.config import settings
+from ofac.core.countries import get_general_license, is_sanctioned_country
 from ofac.core.models import MatchResult, MatchStatus
 
 # Humanitarian keywords for context detection
@@ -110,6 +111,73 @@ class ScreeningClassifier:
         return MatchStatus.OK
 
 
+def classify_with_gl_context(
+    highest_score: int,
+    matches: list[MatchResult],
+    entity_country: str | None = None,
+    description: str | None = None,
+) -> tuple[MatchStatus, bool, str | None]:
+    """Classify screening result with General License context detection.
+
+    Enhanced classification that considers:
+    - Match score thresholds
+    - Sanctioned country context
+    - Humanitarian keyword detection
+    - General License applicability
+
+    Classification rules:
+    - If score >= NOK threshold AND sanctioned country AND NO humanitarian keywords → NOK
+    - If score >= NOK threshold AND sanctioned country AND humanitarian keywords → REVIEW (GL applicable)
+    - If score >= NOK threshold AND NOT sanctioned country → NOK
+    - If score >= REVIEW threshold → REVIEW
+    - Otherwise → OK
+
+    Args:
+        highest_score: Highest match score found (0-100).
+        matches: List of all matches found.
+        entity_country: Entity's country (for GL detection).
+        description: Project description (for humanitarian detection).
+
+    Returns:
+        Tuple of (MatchStatus, is_humanitarian, general_license_note).
+    """
+    # Check humanitarian keywords even if no matches (for transparency)
+    is_humanitarian, detected_keywords = detect_humanitarian_keywords(description)
+
+    if not matches:
+        return MatchStatus.OK, is_humanitarian, None
+
+    classifier = ScreeningClassifier()
+    base_status = classifier.classify(highest_score)
+
+    # Check for General License applicability
+    is_sanctioned = entity_country and is_sanctioned_country(entity_country)
+
+    general_license_note: str | None = None
+
+    # If high score in sanctioned country with humanitarian context → REVIEW with GL
+    if (
+        base_status == MatchStatus.NOK
+        and is_sanctioned
+        and is_humanitarian
+    ):
+        gl = get_general_license(entity_country)
+        if gl:
+            general_license_note = (
+                f"{gl.code}: {gl.description}. "
+                f"Potential humanitarian license applicability. "
+                f"Detected keywords: {', '.join(detected_keywords)}"
+            )
+            return MatchStatus.REVIEW, True, general_license_note
+
+    # If high score in sanctioned country WITHOUT humanitarian context → NOK
+    if base_status == MatchStatus.NOK and is_sanctioned and not is_humanitarian:
+        return MatchStatus.NOK, False, None
+
+    # Otherwise, return base classification
+    return base_status, is_humanitarian, general_license_note
+
+
 def classify_screening_result(
     highest_score: int,
     matches: list[MatchResult],
@@ -174,6 +242,8 @@ def detect_humanitarian_keywords(description: str | None) -> tuple[bool, list[st
 __all__ = [
     "ScreeningClassifier",
     "classify_screening_result",
+    "classify_with_gl_context",
     "detect_humanitarian_keywords",
     "HUMANITARIAN_KEYWORDS",
 ]
+

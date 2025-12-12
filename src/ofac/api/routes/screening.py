@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 
 from ofac.api.deps import get_matcher
 from ofac.api.schemas import SingleScreeningRequest, SingleScreeningResponse
-from ofac.core.classifier import classify_screening_result
+from ofac.core.classifier import classify_with_gl_context
 from ofac.core.exceptions import (
     ColumnMappingError,
     FileFormatError,
@@ -18,7 +18,12 @@ from ofac.core.exceptions import (
 )
 from ofac.core.file_parser import detect_columns, parse_file
 from ofac.core.matcher import EntityMatcher
-from ofac.core.models import BatchScreeningResponse, EntityInput, MatchStatus, ScreeningResult
+from ofac.core.models import (
+    BatchScreeningResponse,
+    EntityInput,
+    MatchStatus,
+    ScreeningResult,
+)
 
 router = APIRouter(prefix="/screenings", tags=["Screening"])
 
@@ -53,9 +58,14 @@ async def screen_single_entity(
             max_results=10,
         )
 
-        # Classify result (OK/REVIEW/NOK)
+        # Classify result with GL context (OK/REVIEW/NOK)
         highest_score = matches[0].match_score if matches else 0
-        match_status = classify_screening_result(highest_score, matches)
+        match_status, is_humanitarian, gl_note = classify_with_gl_context(
+            highest_score=highest_score,
+            matches=matches,
+            entity_country=entity_input.country,
+            description=entity_input.description,
+        )
 
         # Get OFAC version
         ofac_version = matcher.data.version.loaded_at or "unknown"
@@ -68,6 +78,8 @@ async def screen_single_entity(
             highest_score=highest_score,
             ofac_version=ofac_version,
             timestamp=datetime.now(UTC),
+            humanitarian_flag=is_humanitarian,
+            general_license_note=gl_note,
         )
 
         # Calculate duration
@@ -89,8 +101,6 @@ async def screen_single_entity(
                 "message": f"Screening failed: {str(e)}",
             },
         ) from e
-
-
 
 
 @router.post("/batch", response_model=BatchScreeningResponse)
@@ -162,9 +172,14 @@ async def screen_batch(
                 max_results=10,
             )
 
-            # Classify result
+            # Classify result with GL context
             highest_score = matches[0].match_score if matches else 0
-            match_status = classify_screening_result(highest_score, matches)
+            match_status, is_humanitarian, gl_note = classify_with_gl_context(
+                highest_score=highest_score,
+                matches=matches,
+                entity_country=entity_input.country,
+                description=entity_input.description,
+            )
 
             # Count by status
             if match_status == MatchStatus.OK:
@@ -184,6 +199,8 @@ async def screen_batch(
                 highest_score=highest_score,
                 ofac_version=ofac_version,
                 timestamp=datetime.now(UTC),
+                humanitarian_flag=is_humanitarian,
+                general_license_note=gl_note,
             )
             results.append(screening_result)
 
@@ -250,4 +267,3 @@ async def screen_batch(
 
 
 __all__ = ["router"]
-

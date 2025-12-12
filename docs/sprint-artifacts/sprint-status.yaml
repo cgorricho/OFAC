@@ -82,7 +82,7 @@ development_status:
   3-2-sanctioned-countries-registry: done
   3-3-country-aware-score-boosting: done
   3-4-humanitarian-keyword-detection: done
-  3-5-general-license-flagging: backlog
+  3-5-general-license-flagging: done
   3-6-country-alignment-display: backlog
   epic-3-retrospective: optional
 
