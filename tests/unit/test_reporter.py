@@ -75,6 +75,36 @@ class TestReportGenerator:
         workbook_bytes = generator.generate(sample_batch_response)
 
         workbook = load_workbook(io.BytesIO(workbook_bytes))
-        # Workbook should exist (sheets will be added in subsequent stories)
+        # Workbook should exist with Summary sheet
         assert workbook is not None
+        assert "Summary" in workbook.sheetnames
+
+    def test_summary_sheet_contains_metadata(self, sample_batch_response) -> None:
+        """Summary sheet contains screening metadata."""
+        generator = ReportGenerator()
+        workbook_bytes = generator.generate(sample_batch_response)
+
+        workbook = load_workbook(io.BytesIO(workbook_bytes))
+        sheet = workbook["Summary"]
+
+        # Check for key metadata
+        cell_values = [cell.value for row in sheet.iter_rows() for cell in row]
+        assert "OFAC Screening Report - Summary" in cell_values
+        assert "Screening ID" in cell_values
+        assert "Total Entities Screened" in cell_values
+        assert "Status Breakdown" in cell_values
+
+    def test_summary_sheet_contains_statistics(self, sample_batch_response) -> None:
+        """Summary sheet contains status breakdown."""
+        generator = ReportGenerator()
+        workbook_bytes = generator.generate(sample_batch_response)
+
+        workbook = load_workbook(io.BytesIO(workbook_bytes))
+        sheet = workbook["Summary"]
+
+        # Check for status breakdown
+        cell_values = [cell.value for row in sheet.iter_rows() for cell in row]
+        assert "OK" in cell_values
+        assert "REVIEW" in cell_values
+        assert "NOK" in cell_values or 0 in cell_values  # NOK count might be 0
 
