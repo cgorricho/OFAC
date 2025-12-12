@@ -58,6 +58,8 @@ __all__ = [
     # Classifier
     "ScreeningClassifier",
     "classify_screening_result",
+    "detect_humanitarian_keywords",
+    "HUMANITARIAN_KEYWORDS",
     # Countries
     "is_sanctioned_country",
     "get_general_license",
