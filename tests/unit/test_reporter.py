@@ -169,3 +169,157 @@ class TestReportGenerator:
         cell_values = [cell.value for row in sheet.iter_rows(min_row=2) for cell in row]
         assert "Test Org 1" in cell_values
         assert "Test Org 2" in cell_values
+
+    def test_exceptions_sheet_exists(self, sample_batch_response) -> None:
+        """Exceptions sheet is created in workbook."""
+        generator = ReportGenerator()
+        workbook_bytes = generator.generate(sample_batch_response)
+
+        workbook = load_workbook(io.BytesIO(workbook_bytes))
+        assert "Exceptions" in workbook.sheetnames
+
+    def test_exceptions_sheet_filters_review_nok(self) -> None:
+        """Exceptions sheet contains only REVIEW and NOK cases."""
+        results = [
+            ScreeningResult(
+                entity_input=EntityInput(entity_name="OK Org", country="US"),
+                match_status=MatchStatus.OK,
+                highest_score=0,
+                ofac_version="2025-12-01",
+                matches=[],
+            ),
+            ScreeningResult(
+                entity_input=EntityInput(entity_name="REVIEW Org", country="SY"),
+                match_status=MatchStatus.REVIEW,
+                highest_score=85,
+                ofac_version="2025-12-01",
+                matches=[
+                    MatchResult(
+                        sdn_name="REVIEW ENTITY",
+                        sdn_type="entity",
+                        match_score=85,
+                        match_type=MatchType.FUZZY,
+                        ofac_list=OFACList.SDN,
+                        programs=[],
+                        ent_num=1,
+                        country="Syria",
+                        country_match=True,
+                    )
+                ],
+            ),
+            ScreeningResult(
+                entity_input=EntityInput(entity_name="NOK Org", country="IR"),
+                match_status=MatchStatus.NOK,
+                highest_score=95,
+                ofac_version="2025-12-01",
+                matches=[
+                    MatchResult(
+                        sdn_name="NOK ENTITY",
+                        sdn_type="entity",
+                        match_score=95,
+                        match_type=MatchType.EXACT,
+                        ofac_list=OFACList.SDN,
+                        programs=["IRAN"],
+                        ent_num=2,
+                        country="Iran",
+                        country_match=True,
+                    )
+                ],
+            ),
+        ]
+        batch_response = BatchScreeningResponse(
+            results=results,
+            total_screened=3,
+            ok_count=1,
+            review_count=1,
+            nok_count=1,
+        )
+
+        generator = ReportGenerator()
+        workbook_bytes = generator.generate(batch_response)
+
+        workbook = load_workbook(io.BytesIO(workbook_bytes))
+        sheet = workbook["Exceptions"]
+
+        # Should have 2 rows (REVIEW + NOK), not OK
+        cell_values = [cell.value for row in sheet.iter_rows() for cell in row]
+        assert "REVIEW Org" in cell_values
+        assert "NOK Org" in cell_values
+        assert "OK Org" not in cell_values
+
+    def test_exceptions_sheet_sorted_by_risk(self) -> None:
+        """Exceptions sheet is sorted by status (NOK first) then score."""
+        results = [
+            ScreeningResult(
+                entity_input=EntityInput(entity_name="REVIEW Low", country="SY"),
+                match_status=MatchStatus.REVIEW,
+                highest_score=80,
+                ofac_version="2025-12-01",
+                matches=[
+                    MatchResult(
+                        sdn_name="ENTITY",
+                        sdn_type="entity",
+                        match_score=80,
+                        match_type=MatchType.FUZZY,
+                        ofac_list=OFACList.SDN,
+                        programs=[],
+                        ent_num=1,
+                        country="Syria",
+                    )
+                ],
+            ),
+            ScreeningResult(
+                entity_input=EntityInput(entity_name="NOK High", country="IR"),
+                match_status=MatchStatus.NOK,
+                highest_score=98,
+                ofac_version="2025-12-01",
+                matches=[
+                    MatchResult(
+                        sdn_name="NOK ENTITY",
+                        sdn_type="entity",
+                        match_score=98,
+                        match_type=MatchType.EXACT,
+                        ofac_list=OFACList.SDN,
+                        programs=["IRAN"],
+                        ent_num=2,
+                        country="Iran",
+                    )
+                ],
+            ),
+            ScreeningResult(
+                entity_input=EntityInput(entity_name="REVIEW High", country="SY"),
+                match_status=MatchStatus.REVIEW,
+                highest_score=90,
+                ofac_version="2025-12-01",
+                matches=[
+                    MatchResult(
+                        sdn_name="REVIEW ENTITY",
+                        sdn_type="entity",
+                        match_score=90,
+                        match_type=MatchType.FUZZY,
+                        ofac_list=OFACList.SDN,
+                        programs=[],
+                        ent_num=3,
+                        country="Syria",
+                    )
+                ],
+            ),
+        ]
+        batch_response = BatchScreeningResponse(
+            results=results,
+            total_screened=3,
+            ok_count=0,
+            review_count=2,
+            nok_count=1,
+        )
+
+        generator = ReportGenerator()
+        workbook_bytes = generator.generate(batch_response)
+
+        workbook = load_workbook(io.BytesIO(workbook_bytes))
+        sheet = workbook["Exceptions"]
+
+        # First data row should be NOK (highest risk)
+        data_rows = list(sheet.iter_rows(min_row=2, values_only=True))
+        assert data_rows[0][3] == "NOK"  # Status column
+        assert data_rows[0][1] == "NOK High"  # Organization name

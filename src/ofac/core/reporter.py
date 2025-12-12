@@ -17,6 +17,8 @@ from typing import TYPE_CHECKING
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 
+from ofac.core.models import MatchStatus
+
 if TYPE_CHECKING:
     from ofac.core.models import BatchScreeningResponse
 
@@ -68,6 +70,7 @@ class ReportGenerator:
         # Generate sheets
         self._create_summary_sheet(batch_response)
         self._create_details_sheet(batch_response)
+        self._create_exceptions_sheet(batch_response)
 
         # Save to bytes
         output = io.BytesIO()
@@ -190,8 +193,79 @@ class ReportGenerator:
                 sheet.column_dimensions[col_letter].width = 18
 
     def _create_exceptions_sheet(self, batch_response: "BatchScreeningResponse") -> None:
-        """Create Exceptions sheet (to be implemented in Story 4.4)."""
-        pass  # Placeholder
+        """Create Exceptions sheet with only REVIEW and NOK cases.
+
+        Args:
+            batch_response: BatchScreeningResponse containing screening results.
+        """
+        sheet = self.workbook.create_sheet("Exceptions")
+
+        # Filter to only REVIEW and NOK
+        exceptions = [
+            r for r in batch_response.results
+            if r.match_status in (MatchStatus.REVIEW, MatchStatus.NOK)
+        ]
+
+        if not exceptions:
+            sheet.append(["No Exceptions"])
+            sheet.append(["All entities screened as OK"])
+            return
+
+        # Sort by status (NOK first, then REVIEW), then by score descending
+        exceptions.sort(
+            key=lambda x: (
+                0 if x.match_status == MatchStatus.NOK else 1,  # NOK first
+                -x.highest_score,  # Higher scores first
+            )
+        )
+
+        # Header row (same as details sheet)
+        headers = [
+            "Row #",
+            "Organization Name",
+            "Country",
+            "Status",
+            "Match Score",
+            "Matched SDN",
+            "Match Type",
+            "Country Alignment",
+        ]
+        sheet.append(headers)
+
+        # Data rows
+        for idx, result in enumerate(exceptions, start=1):
+            entity_input = result.entity_input
+            highest_match = result.matches[0] if result.matches else None
+
+            row = [
+                idx,
+                entity_input.entity_name,
+                entity_input.country or "N/A",
+                result.match_status.value,
+                result.highest_score,
+                highest_match.sdn_name if highest_match else "N/A",
+                highest_match.match_type.value if highest_match else "N/A",
+                "Match" if highest_match and highest_match.country_match else "N/A" if not highest_match else "Mismatch",
+            ]
+            sheet.append(row)
+
+        # Auto-adjust column widths (same as details sheet)
+        for col_idx, _header in enumerate(headers, start=1):
+            col_letter = get_column_letter(col_idx)
+            if col_idx == 1:  # Row #
+                sheet.column_dimensions[col_letter].width = 8
+            elif col_idx == 2:  # Organization Name
+                sheet.column_dimensions[col_letter].width = 30
+            elif col_idx == 3:  # Country
+                sheet.column_dimensions[col_letter].width = 15
+            elif col_idx == 4 or col_idx == 5:  # Status
+                sheet.column_dimensions[col_letter].width = 12
+            elif col_idx == 6:  # Matched SDN
+                sheet.column_dimensions[col_letter].width = 35
+            elif col_idx == 7:  # Match Type
+                sheet.column_dimensions[col_letter].width = 12
+            elif col_idx == 8:  # Country Alignment
+                sheet.column_dimensions[col_letter].width = 18
 
 
 __all__ = ["ReportGenerator"]
