@@ -83,7 +83,8 @@ development_status:
   3-3-country-aware-score-boosting: done
   3-4-humanitarian-keyword-detection: done
   3-5-general-license-flagging: done
-  3-6-country-alignment-display: in-progress
+  3-6-country-alignment-display: done
+  epic-3: done
   epic-3-retrospective: optional
 
   # ========================================
