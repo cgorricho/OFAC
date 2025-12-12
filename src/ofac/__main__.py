@@ -47,13 +47,29 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.streamlit:
-        # Streamlit mode - to be implemented
-        print("Streamlit application not yet implemented. Coming in Epic 2.")
-        return 1
+        # Streamlit mode
+        import subprocess
+
+        streamlit_port = args.port if args.port != 8000 else 8501
+        subprocess.run(
+            [
+                "streamlit",
+                "run",
+                "src/ofac/streamlit/app.py",
+                "--server.port",
+                str(streamlit_port),
+                "--server.address",
+                args.host,
+            ]
+        )
+        return 0
 
     # Default: Start API server
-    print(f"Starting OFAC API server on {args.host}:{args.port}")
-    print("API server not yet implemented. Coming in Epic 2.")
+    import uvicorn
+
+    from ofac.api.main import app
+
+    uvicorn.run(app, host=args.host, port=args.port)
     return 0
 
 
